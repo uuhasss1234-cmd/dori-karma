@@ -1186,10 +1186,11 @@
     }
 
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
-      });
-    }
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    for (let reg of regs) reg.unregister();
+  });
+}
+
 
     renderAll();
     syncFromCloud(false);
