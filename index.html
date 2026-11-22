@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -650,7 +650,6 @@
         </div>
       </div>
     </section>
-
     <section id="tab-rounds" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
@@ -915,7 +914,6 @@
       </div>
     </div>
   </div>
-
   <script>
     const _K = "HASSAN_\\HASSAN";
     const STORAGE_KEY = "dori_karma_first_div_state_v4";
@@ -1003,10 +1001,7 @@
     function buildDefaultTeamsInfo() {
       const info = {};
       for (const name of TEAMS) {
-        info[name] = {
-          coach: "غير محدد",
-          players: []
-        };
+        info[name] = { coach: "غير محدد", players: [] };
       }
       return info;
     }
@@ -1046,11 +1041,9 @@
 
     function sanitizeMatch(m) {
       const hs = (m && m.hScore !== null && m.hScore !== undefined && m.hScore !== "" && Number.isFinite(Number(m.hScore)))
-        ? Math.max(0, Math.floor(Number(m.hScore)))
-        : null;
+        ? Math.max(0, Math.floor(Number(m.hScore))) : null;
       const as = (m && m.aScore !== null && m.aScore !== undefined && m.aScore !== "" && Number.isFinite(Number(m.aScore)))
-        ? Math.max(0, Math.floor(Number(m.aScore)))
-        : null;
+        ? Math.max(0, Math.floor(Number(m.aScore))) : null;
       return {
         home: m.home,
         away: m.away,
@@ -1078,63 +1071,43 @@
       const playedPairs = new Set();
       for (const r of INITIAL_ROUNDS) {
         for (const m of r.matches) {
-          const key = [m.home, m.away].sort().join("||");
-          playedPairs.add(key);
+          playedPairs.add([m.home, m.away].sort().join("||"));
         }
       }
-
       const remainingPairs = [];
       for (let i = 0; i < TEAMS.length; i++) {
         for (let j = i + 1; j < TEAMS.length; j++) {
           const pair = [TEAMS[i], TEAMS[j]];
-          const key = [...pair].sort().join("||");
-          if (!playedPairs.has(key)) {
+          if (!playedPairs.has([...pair].sort().join("||"))) {
             remainingPairs.push(pair);
           }
         }
       }
-
       const rounds = INITIAL_ROUNDS.map(r => ({
         round: r.round,
         bye: r.bye,
         matches: r.matches.map(sanitizeMatch)
       }));
-
       const usedGlobalPairs = new Set(playedPairs);
       const pool = remainingPairs.filter(([a, b]) => !usedGlobalPairs.has([a, b].sort().join("||")));
-
       for (let rNum = 6; rNum <= 13; rNum++) {
         const byeTeam = TEAMS[(rNum - 1) % TEAMS.length];
         const activeTeams = TEAMS.filter(t => t !== byeTeam);
         const usedInRound = new Set();
         const roundMatches = [];
-
         for (let k = 0; k < pool.length && roundMatches.length < 6; k++) {
           const [a, b] = pool[k];
           const pairKey = [a, b].sort().join("||");
-          if (a === byeTeam || b === byeTeam) continue;
-          if (usedGlobalPairs.has(pairKey)) continue;
+          if (a === byeTeam || b === byeTeam || usedGlobalPairs.has(pairKey)) continue;
           if (!usedInRound.has(a) && !usedInRound.has(b)) {
             usedInRound.add(a);
             usedInRound.add(b);
             usedGlobalPairs.add(pairKey);
-            roundMatches.push({
-              home: a,
-              away: b,
-              hScore: null,
-              aScore: null,
-              hY: 0,
-              aY: 0,
-              hR: 0,
-              aR: 0,
-              hLineup: [],
-              aLineup: []
-            });
+            roundMatches.push({ home: a, away: b, hScore: null, aScore: null, hY: 0, aY: 0, hR: 0, aR: 0, hLineup: [], aLineup: [] });
             pool.splice(k, 1);
             k--;
           }
         }
-
         const leftTeams = activeTeams.filter(t => !usedInRound.has(t));
         for (let i = 0; i < leftTeams.length && roundMatches.length < 6; i++) {
           for (let j = i + 1; j < leftTeams.length; j++) {
@@ -1145,26 +1118,13 @@
               usedInRound.add(a);
               usedInRound.add(b);
               usedGlobalPairs.add(pairKey);
-              roundMatches.push({
-                home: a,
-                away: b,
-                hScore: null,
-                aScore: null,
-                hY: 0,
-                aY: 0,
-                hR: 0,
-                aR: 0,
-                hLineup: [],
-                aLineup: []
-              });
+              roundMatches.push({ home: a, away: b, hScore: null, aScore: null, hY: 0, aY: 0, hR: 0, aR: 0, hLineup: [], aLineup: [] });
               break;
             }
           }
         }
-
         rounds.push({ round: rNum, bye: byeTeam, matches: roundMatches });
       }
-
       return rounds;
     }
 
@@ -1225,11 +1185,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(getSerializablePayload())
         });
-        if (res.ok) {
-          setSyncBadge("مباشر ✓");
-        } else {
-          setSyncBadge("تنبيه حفظ");
-        }
+        setSyncBadge(res.ok ? "مباشر ✓" : "تنبيه حفظ");
       } catch (e) {
         setSyncBadge("بدون اتصال");
       }
@@ -1239,10 +1195,7 @@
       if (manual) setSyncBadge("تحديث...");
       try {
         const res = await fetch(FIREBASE_DB_URL + "?t=" + Date.now(), { cache: "no-store" });
-        if (!res.ok) {
-          setSyncBadge("مزامنة");
-          return;
-        }
+        if (!res.ok) { setSyncBadge("مزامنة"); return; }
         const data = await res.json();
         const cleanRounds = sanitizeRounds(data && data.rounds);
         if (cleanRounds) {
@@ -1252,10 +1205,7 @@
           state.playerCards = sanitizePlayerCards(data.playerCards);
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
-              rounds: state.rounds,
-              scorers: state.scorers,
-              teamsInfo: state.teamsInfo,
-              playerCards: state.playerCards
+              rounds: state.rounds, scorers: state.scorers, teamsInfo: state.teamsInfo, playerCards: state.playerCards
             }));
           } catch (e) {}
           setSyncBadge("مباشر ✓");
@@ -1271,15 +1221,11 @@
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          rounds: state.rounds,
-          scorers: state.scorers,
-          teamsInfo: state.teamsInfo,
-          playerCards: state.playerCards
+          rounds: state.rounds, scorers: state.scorers, teamsInfo: state.teamsInfo, playerCards: state.playerCards
         }));
       } catch (e) {}
       pushToCloud();
     }
-
     function getMatchTeamLineupDisplay(teamName, customLineup) {
       const roster = state.teamsInfo[teamName]?.players || [];
       if (Array.isArray(customLineup) && customLineup.length > 0) {
@@ -1298,30 +1244,16 @@
       document.getElementById("lineupModalTitle").textContent = `تشكيلة قبل المباراة: ${m.home} × ${m.away}`;
       document.getElementById("homeLineupLabel").textContent = `لاعبو ${m.home}`;
       document.getElementById("awayLineupLabel").textContent = `لاعبو ${m.away}`;
-
       const hRoster = state.teamsInfo[m.home]?.players || [];
       const aRoster = state.teamsInfo[m.away]?.players || [];
       const hSelected = Array.isArray(m.hLineup) && m.hLineup.length > 0 ? m.hLineup : hRoster.map(p => p.name);
       const aSelected = Array.isArray(m.aLineup) && m.aLineup.length > 0 ? m.aLineup : aRoster.map(p => p.name);
-
       document.getElementById("homeLineupChecks").innerHTML = hRoster.length === 0
         ? `<div style="font-size:0.75rem;color:var(--slate-600);padding:6px;">أضف لاعبين لـ ${m.home} من تبويب الفرق أولاً.</div>`
-        : hRoster.map(p => `
-            <label class="check-player-row">
-              <input type="checkbox" class="home-lineup-cb" value="${p.name}" ${hSelected.includes(p.name) ? "checked" : ""} />
-              <span>${p.name}${p.number ? ` (#${p.number})` : ""}</span>
-            </label>
-          `).join("");
-
+        : hRoster.map(p => `<label class="check-player-row"><input type="checkbox" class="home-lineup-cb" value="${p.name}" ${hSelected.includes(p.name) ? "checked" : ""} /><span>${p.name}${p.number ? ` (#${p.number})` : ""}</span></label>`).join("");
       document.getElementById("awayLineupChecks").innerHTML = aRoster.length === 0
         ? `<div style="font-size:0.75rem;color:var(--slate-600);padding:6px;">أضف لاعبين لـ ${m.away} من تبويب الفرق أولاً.</div>`
-        : aRoster.map(p => `
-            <label class="check-player-row">
-              <input type="checkbox" class="away-lineup-cb" value="${p.name}" ${aSelected.includes(p.name) ? "checked" : ""} />
-              <span>${p.name}${p.number ? ` (#${p.number})` : ""}</span>
-            </label>
-          `).join("");
-
+        : aRoster.map(p => `<label class="check-player-row"><input type="checkbox" class="away-lineup-cb" value="${p.name}" ${aSelected.includes(p.name) ? "checked" : ""} /><span>${p.name}${p.number ? ` (#${p.number})` : ""}</span></label>`).join("");
       document.getElementById("lineupModal").classList.add("open");
     }
 
@@ -1340,22 +1272,9 @@
     function computeStandings() {
       const map = {};
       for (const name of TEAMS) {
-        map[name] = {
-          team: name,
-          played: 0,
-          win: 0,
-          draw: 0,
-          loss: 0,
-          gf: 0,
-          ga: 0,
-          gd: 0,
-          pts: 0,
-          yellow: 0,
-          red: 0
-        };
+        map[name] = { team: name, played: 0, win: 0, draw: 0, loss: 0, gf: 0, ga: 0, gd: 0, pts: 0, yellow: 0, red: 0 };
       }
       let playedMatchesCount = 0;
-
       for (const r of state.rounds) {
         for (const m of r.matches) {
           const h = map[m.home];
@@ -1365,51 +1284,26 @@
           a.yellow += Number(m.aY) || 0;
           h.red += Number(m.hR) || 0;
           a.red += Number(m.aR) || 0;
-
           if (m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "") {
             const hs = Number(m.hScore);
             const as = Number(m.aScore);
             if (Number.isFinite(hs) && Number.isFinite(as)) {
               playedMatchesCount++;
-              h.played++;
-              a.played++;
-              h.gf += hs;
-              h.ga += as;
-              a.gf += as;
-              a.ga += hs;
-
-              if (hs > as) {
-                h.win++;
-                h.pts += 3;
-                a.loss++;
-              } else if (as > hs) {
-                a.win++;
-                a.pts += 3;
-                h.loss++;
-              } else {
-                h.draw++;
-                a.draw++;
-                h.pts += 1;
-                a.pts += 1;
-              }
+              h.played++; a.played++;
+              h.gf += hs; h.ga += as; a.gf += as; a.ga += hs;
+              if (hs > as) { h.win++; h.pts += 3; a.loss++; }
+              else if (as > hs) { a.win++; a.pts += 3; h.loss++; }
+              else { h.draw++; a.draw++; h.pts += 1; a.pts += 1; }
             }
           }
         }
       }
-
       const list = Object.values(map).map(row => {
         const gf = Number(row.gf) || 0;
         const ga = Number(row.ga) || 0;
         return { ...row, gf, ga, gd: gf - ga, pts: Number(row.pts) || 0 };
       });
-
-      list.sort((x, y) => {
-        if (y.pts !== x.pts) return y.pts - x.pts;
-        if (y.gd !== x.gd) return y.gd - x.gd;
-        if (y.gf !== x.gf) return y.gf - x.gf;
-        return x.team.localeCompare(y.team, "ar");
-      });
-
+      list.sort((x, y) => (y.pts - x.pts) || (y.gd - x.gd) || (y.gf - x.gf) || x.team.localeCompare(y.team, "ar"));
       return { list, playedMatchesCount };
     }
 
@@ -1424,10 +1318,8 @@
     }
 
     function handleRoleButton() {
-      if (state.isAdmin) {
-        state.isAdmin = false;
-        renderAll();
-      } else {
+      if (state.isAdmin) { state.isAdmin = false; renderAll(); }
+      else {
         document.getElementById("pinInput").value = "";
         document.getElementById("pinError").style.display = "none";
         document.getElementById("pinModal").classList.add("open");
@@ -1437,8 +1329,7 @@
 
     function submitPin(e) {
       e.preventDefault();
-      const val = document.getElementById("pinInput").value;
-      if (val === _K) {
+      if (document.getElementById("pinInput").value === _K) {
         state.isAdmin = true;
         closeModal("pinModal");
         renderAll();
@@ -1447,9 +1338,7 @@
       }
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.remove("open");
-    }
+    function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 
     function openMatchModal(roundIdx, matchIdx) {
       if (!state.isAdmin) return;
@@ -1462,14 +1351,12 @@
       document.getElementById("awayYellowLabel").textContent = `صفراء ${m.away}`;
       document.getElementById("homeRedLabel").textContent = `حمراء ${m.home}`;
       document.getElementById("awayRedLabel").textContent = `حمراء ${m.away}`;
-
       document.getElementById("homeScoreInput").value = (m.hScore === null || m.hScore === undefined) ? "" : m.hScore;
       document.getElementById("awayScoreInput").value = (m.aScore === null || m.aScore === undefined) ? "" : m.aScore;
       document.getElementById("homeYellowInput").value = Number(m.hY) || 0;
       document.getElementById("awayYellowInput").value = Number(m.aY) || 0;
       document.getElementById("homeRedInput").value = Number(m.hR) || 0;
       document.getElementById("awayRedInput").value = Number(m.aR) || 0;
-
       document.getElementById("matchModal").classList.add("open");
     }
 
@@ -1480,14 +1367,12 @@
       const m = state.rounds[roundIdx].matches[matchIdx];
       const hsRaw = document.getElementById("homeScoreInput").value;
       const asRaw = document.getElementById("awayScoreInput").value;
-
       m.hScore = hsRaw === "" ? null : Math.max(0, Math.floor(Number(hsRaw) || 0));
       m.aScore = asRaw === "" ? null : Math.max(0, Math.floor(Number(asRaw) || 0));
       m.hY = Math.max(0, Math.floor(Number(document.getElementById("homeYellowInput").value) || 0));
       m.aY = Math.max(0, Math.floor(Number(document.getElementById("awayYellowInput").value) || 0));
       m.hR = Math.max(0, Math.floor(Number(document.getElementById("homeRedInput").value) || 0));
       m.aR = Math.max(0, Math.floor(Number(document.getElementById("awayRedInput").value) || 0));
-
       saveState();
       closeModal("matchModal");
       renderAll();
@@ -1495,8 +1380,7 @@
 
     function openScorerModal() {
       if (!state.isAdmin) return;
-      const sel = document.getElementById("scorerTeamSelect");
-      sel.innerHTML = TEAMS.map(t => `<option value="${t}">${t}</option>`).join("");
+      document.getElementById("scorerTeamSelect").innerHTML = TEAMS.map(t => `<option value="${t}">${t}</option>`).join("");
       document.getElementById("scorerNameInput").value = "";
       document.getElementById("scorerGoalsInput").value = 1;
       document.getElementById("scorerModal").classList.add("open");
@@ -1509,22 +1393,15 @@
       const team = document.getElementById("scorerTeamSelect").value;
       const goals = Math.max(1, Math.floor(Number(document.getElementById("scorerGoalsInput").value) || 1));
       if (!name) return;
-
       const existing = state.scorers.find(s => s.name === name && s.team === team);
-      if (existing) {
-        existing.goals = (Number(existing.goals) || 0) + goals;
-      } else {
-        state.scorers.push({ name, team, goals });
-      }
+      if (existing) existing.goals = (Number(existing.goals) || 0) + goals;
+      else state.scorers.push({ name, team, goals });
       saveState();
       closeModal("scorerModal");
       renderAll();
     }
 
-    function selectTeamAndOpen(teamName) {
-      state.selectedTeam = teamName;
-      switchTab("teams");
-    }
+    function selectTeamAndOpen(teamName) { state.selectedTeam = teamName; switchTab("teams"); }
 
     function openCoachModal() {
       if (!state.isAdmin) return;
@@ -1563,10 +1440,7 @@
       const numRaw = document.getElementById("playerNumberInput").value;
       if (!name) return;
       if (!state.teamsInfo[tName]) state.teamsInfo[tName] = { coach: "غير محدد", players: [] };
-      state.teamsInfo[tName].players.push({
-        name,
-        number: numRaw !== "" ? Math.max(1, Math.min(99, Number(numRaw))) : null
-      });
+      state.teamsInfo[tName].players.push({ name, number: numRaw !== "" ? Math.max(1, Math.min(99, Number(numRaw))) : null });
       saveState();
       closeModal("playerModal");
       renderAll();
@@ -1574,8 +1448,7 @@
 
     function removeTeamPlayer(playerIdx) {
       if (!state.isAdmin) return;
-      const tName = state.selectedTeam;
-      const list = state.teamsInfo[tName]?.players;
+      const list = state.teamsInfo[state.selectedTeam]?.players;
       if (!Array.isArray(list)) return;
       list.splice(playerIdx, 1);
       saveState();
@@ -1584,8 +1457,7 @@
 
     function openPlayerCardModal() {
       if (!state.isAdmin) return;
-      const sel = document.getElementById("cardTeamSelect");
-      sel.innerHTML = TEAMS.map(t => `<option value="${t}">${t}</option>`).join("");
+      document.getElementById("cardTeamSelect").innerHTML = TEAMS.map(t => `<option value="${t}">${t}</option>`).join("");
       document.getElementById("cardPlayerNameInput").value = "";
       document.getElementById("cardYellowInput").value = 1;
       document.getElementById("cardRedInput").value = 0;
@@ -1600,14 +1472,9 @@
       const yellow = Math.max(0, Math.floor(Number(document.getElementById("cardYellowInput").value) || 0));
       const red = Math.max(0, Math.floor(Number(document.getElementById("cardRedInput").value) || 0));
       if (!name || (yellow === 0 && red === 0)) return;
-
       const existing = state.playerCards.find(c => c.name === name && c.team === team);
-      if (existing) {
-        existing.yellow += yellow;
-        existing.red += red;
-      } else {
-        state.playerCards.push({ name, team, yellow, red });
-      }
+      if (existing) { existing.yellow += yellow; existing.red += red; }
+      else state.playerCards.push({ name, team, yellow, red });
       saveState();
       closeModal("playerCardModal");
       renderAll();
@@ -1636,23 +1503,14 @@
 
     function copyShareText() {
       const ta = document.getElementById("shareTextArea");
-      ta.select();
-      ta.setSelectionRange(0, ta.value.length);
-      try {
-        navigator.clipboard?.writeText(ta.value);
-      } catch (e) {}
-      try {
-        document.execCommand("copy");
-      } catch (e) {}
+      ta.select(); ta.setSelectionRange(0, ta.value.length);
+      try { navigator.clipboard?.writeText(ta.value); } catch (e) {}
+      try { document.execCommand("copy"); } catch (e) {}
     }
 
     function shareStandings() {
       const { list } = computeStandings();
-      const lines = [
-        "🏆 ترتيب دوري الكرمة - الدرجة الأولى",
-        "اللجنه المركزيه الرياضيه في قضاء كرمة بني سعيد",
-        "--------------------------------"
-      ];
+      const lines = ["🏆 ترتيب دوري الكرمة - الدرجة الأولى", "اللجنه المركزيه الرياضيه في قضاء كرمة بني سعيد", "--------------------------------"];
       list.forEach((r, i) => {
         const gdStr = r.gd > 0 ? `+${r.gd}` : `${r.gd}`;
         lines.push(`${i + 1}. ${r.team} | نقاط: ${r.pts} | لعب: ${r.played} | فارق: ${gdStr}`);
@@ -1663,11 +1521,7 @@
     function shareCurrentRound() {
       const rIdx = state.rounds.findIndex(r => r.round === state.selectedRound);
       const currentRound = state.rounds[rIdx >= 0 ? rIdx : 0];
-      const lines = [
-        `⚽ دوري الكرمة - الدرجة الأولى | الجولة ${currentRound.round}`,
-        `راحة: ${currentRound.bye}`,
-        "--------------------------------"
-      ];
+      const lines = [`⚽ دوري الكرمة - الدرجة الأولى | الجولة ${currentRound.round}`, `راحة: ${currentRound.bye}`, "--------------------------------"];
       currentRound.matches.forEach(m => {
         const played = m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "";
         const resStr = played ? `(${m.hScore} - ${m.aScore})` : "(لم تُلعب)";
@@ -1682,217 +1536,59 @@
       const addPlayerCardBtn = document.getElementById("addPlayerCardBtn");
       const editCoachBtn = document.getElementById("editCoachBtn");
       const addPlayerBtn = document.getElementById("addPlayerBtn");
-
       if (state.isAdmin) {
-        roleBtn.textContent = "وضع المشرف (خروج)";
-        roleBtn.classList.add("admin-active");
-        addScorerBtn.style.display = "inline-block";
-        addPlayerCardBtn.style.display = "inline-block";
-        editCoachBtn.style.display = "inline-block";
-        addPlayerBtn.style.display = "inline-block";
+        roleBtn.textContent = "وضع المشرف (خروج)"; roleBtn.classList.add("admin-active");
+        addScorerBtn.style.display = "inline-block"; addPlayerCardBtn.style.display = "inline-block";
+        editCoachBtn.style.display = "inline-block"; addPlayerBtn.style.display = "inline-block";
       } else {
-        roleBtn.textContent = "وضع المشاهد";
-        roleBtn.classList.remove("admin-active");
-        addScorerBtn.style.display = "none";
-        addPlayerCardBtn.style.display = "none";
-        editCoachBtn.style.display = "none";
-        addPlayerBtn.style.display = "none";
+        roleBtn.textContent = "وضع المشاهد"; roleBtn.classList.remove("admin-active");
+        addScorerBtn.style.display = "none"; addPlayerCardBtn.style.display = "none";
+        editCoachBtn.style.display = "none"; addPlayerBtn.style.display = "none";
       }
-
       const { list, playedMatchesCount } = computeStandings();
       document.getElementById("playedMatchesCount").textContent = `مباريات ملعوبة: ${playedMatchesCount}`;
-
-      const top5Rows = list.slice(0, 5).map((r, i) => `
-        <tr>
-          <td>${i + 1}</td>
-          <td class="team-col"><button class="team-link-btn" onclick="selectTeamAndOpen('${r.team}')">${r.team}</button></td>
-          <td>${r.played}</td>
-          <td>${r.gd}</td>
-          <td class="pts-cell">${r.pts}</td>
-        </tr>
-      `).join("");
-      document.getElementById("homeTopStandings").innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th class="team-col">الفريق</th>
-                <th>م</th>
-                <th>فارق</th>
-                <th>نقاط</th>
-              </tr>
-            </thead>
-            <tbody>${top5Rows}</tbody>
-          </table>
-        </div>
-      `;
-
-      document.getElementById("standingsBody").innerHTML = list.map((r, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td class="team-col"><button class="team-link-btn" onclick="selectTeamAndOpen('${r.team}')">${r.team}</button></td>
-          <td>${r.played}</td>
-          <td>${r.win}</td>
-          <td>${r.draw}</td>
-          <td>${r.loss}</td>
-          <td>${r.gf}</td>
-          <td>${r.ga}</td>
-          <td>${r.gd}</td>
-          <td class="pts-cell">${r.pts}</td>
-          <td>${r.yellow}</td>
-          <td>${r.red}</td>
-        </tr>
-      `).join("");
-
-      const pillsEl = document.getElementById("roundPills");
-      pillsEl.innerHTML = state.rounds.map(r => `
-        <button class="round-pill ${r.round === state.selectedRound ? "active" : ""}" onclick="selectRound(${r.round})">
-          الجولة ${r.round}
-        </button>
-      `).join("");
-
+      const top5Rows = list.slice(0, 5).map((r, i) => `<tr><td>${i + 1}</td><td class="team-col"><button class="team-link-btn" onclick="selectTeamAndOpen('${r.team}')">${r.team}</button></td><td>${r.played}</td><td>${r.gd}</td><td class="pts-cell">${r.pts}</td></tr>`).join("");
+      document.getElementById("homeTopStandings").innerHTML = `<div class="table-wrap"><table><thead><tr><th>#</th><th class="team-col">الفريق</th><th>م</th><th>فارق</th><th>نقاط</th></tr></thead><tbody>${top5Rows}</tbody></table></div>`;
+      document.getElementById("standingsBody").innerHTML = list.map((r, idx) => `<tr><td>${idx + 1}</td><td class="team-col"><button class="team-link-btn" onclick="selectTeamAndOpen('${r.team}')">${r.team}</button></td><td>${r.played}</td><td>${r.win}</td><td>${r.draw}</td><td>${r.loss}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gd}</td><td class="pts-cell">${r.pts}</td><td>${r.yellow}</td><td>${r.red}</td></tr>`).join("");
+      document.getElementById("roundPills").innerHTML = state.rounds.map(r => `<button class="round-pill ${r.round === state.selectedRound ? "active" : ""}" onclick="selectRound(${r.round})">الجولة ${r.round}</button>`).join("");
       const rIdx = state.rounds.findIndex(r => r.round === state.selectedRound);
       const currentRound = state.rounds[rIdx >= 0 ? rIdx : 0];
       const activeRoundIdx = rIdx >= 0 ? rIdx : 0;
       document.getElementById("roundHeading").textContent = `الجولة ${currentRound.round}`;
       document.getElementById("byeTeamBadge").textContent = `راحة: ${currentRound.bye}`;
-
       document.getElementById("roundMatchesList").innerHTML = currentRound.matches.map((m, mIdx) => {
         const played = m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "";
         const scoreText = played ? `${m.hScore} - ${m.aScore}` : "لم تُلعب";
-        const cardsText = (m.hY || m.aY || m.hR || m.aR)
-          ? `صفراء: ${m.hY || 0} - ${m.aY || 0} | حمراء: ${m.hR || 0} - ${m.aR || 0}`
-          : "بدون بطاقات مسجلة";
-
+        const cardsText = (m.hY || m.aY || m.hR || m.aR) ? `صفراء: ${m.hY || 0} - ${m.aY || 0} | حمراء: ${m.hR || 0} - ${m.aR || 0}` : "بدون بطاقات مسجلة";
         const hLineupArr = getMatchTeamLineupDisplay(m.home, m.hLineup);
         const aLineupArr = getMatchTeamLineupDisplay(m.away, m.aLineup);
-        const hCoach = state.teamsInfo[m.home]?.coach && state.teamsInfo[m.home].coach !== "غير محدد"
-          ? ` (المدرب: ${state.teamsInfo[m.home].coach})`
-          : "";
-        const aCoach = state.teamsInfo[m.away]?.coach && state.teamsInfo[m.away].coach !== "غير محدد"
-          ? ` (المدرب: ${state.teamsInfo[m.away].coach})`
-          : "";
-
-        const hItemsHtml = hLineupArr.length > 0
-          ? `<ul class="lineup-list">${hLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>`
-          : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
-        const aItemsHtml = aLineupArr.length > 0
-          ? `<ul class="lineup-list">${aLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>`
-          : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
-
-        const lineupAction = state.isAdmin
-          ? `<button class="btn-outline" onclick="openLineupModal(${activeRoundIdx}, ${mIdx})">تشكيلة المباراة</button>`
-          : "";
-        const adminAction = state.isAdmin
-          ? `<button class="btn-sm" onclick="openMatchModal(${activeRoundIdx}, ${mIdx})">تعديل</button>`
-          : "";
-
-        return `
-          <div class="match-card">
-            <div class="match-row">
-              <div class="team-home"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.home}')">${m.home}</button></div>
-              <div class="score-box">${scoreText}</div>
-              <div class="team-away"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.away}')">${m.away}</button></div>
-            </div>
-            <div class="match-meta">
-              <span>${cardsText}</span>
-              <div class="head-actions">
-                ${lineupAction}
-                ${adminAction}
-              </div>
-            </div>
-            <div class="lineup-box">
-              <div class="lineup-title">
-                <span>تشكيلة الفريقين قبل المباراة</span>
-                <span class="pill-badge">${played ? "انتهت" : "قبل المباراة"}</span>
-              </div>
-              <div class="lineup-grid">
-                <div class="lineup-col">
-                  <strong>${m.home}${hCoach}</strong>
-                  ${hItemsHtml}
-                </div>
-                <div class="lineup-col">
-                  <strong>${m.away}${aCoach}</strong>
-                  ${aItemsHtml}
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
+        const hCoach = state.teamsInfo[m.home]?.coach && state.teamsInfo[m.home].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.home].coach})` : "";
+        const aCoach = state.teamsInfo[m.away]?.coach && state.teamsInfo[m.away].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.away].coach})` : "";
+        const hItemsHtml = hLineupArr.length > 0 ? `<ul class="lineup-list">${hLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
+        const aItemsHtml = aLineupArr.length > 0 ? `<ul class="lineup-list">${aLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
+        const lineupAction = state.isAdmin ? `<button class="btn-outline" onclick="openLineupModal(${activeRoundIdx}, ${mIdx})">تشكيلة المباراة</button>` : "";
+        const adminAction = state.isAdmin ? `<button class="btn-sm" onclick="openMatchModal(${activeRoundIdx}, ${mIdx})">تعديل</button>` : "";
+        return `<div class="match-card"><div class="match-row"><div class="team-home"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.home}')">${m.home}</button></div><div class="score-box">${scoreText}</div><div class="team-away"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.away}')">${m.away}</button></div></div><div class="match-meta"><span>${cardsText}</span><div class="head-actions">${lineupAction}${adminAction}</div></div><div class="lineup-box"><div class="lineup-title"><span>تشكيلة الفريقين قبل المباراة</span><span class="pill-badge">${played ? "انتهت" : "قبل المباراة"}</span></div><div class="lineup-grid"><div class="lineup-col"><strong>${m.home}${hCoach}</strong>${hItemsHtml}</div><div class="lineup-col"><strong>${m.away}${aCoach}</strong>${aItemsHtml}</div></div></div></div>`;
       }).join("");
-
       const standingsByTeam = {};
-      list.forEach((row, index) => {
-        standingsByTeam[row.team] = { ...row, rank: index + 1 };
-      });
-
+      list.forEach((row, index) => { standingsByTeam[row.team] = { ...row, rank: index + 1 }; });
       document.getElementById("teamsCardsGrid").innerHTML = TEAMS.map(tName => {
         const tInfo = state.teamsInfo[tName] || { coach: "غير محدد", players: [] };
         const st = standingsByTeam[tName] || { pts: 0, rank: "-" };
-        const isSel = state.selectedTeam === tName;
-        return `
-          <div class="team-card ${isSel ? "selected" : ""}" onclick="state.selectedTeam='${tName}';renderAll();">
-            <div class="team-card-name">${tName}</div>
-            <div class="team-card-coach">المدرب: ${tInfo.coach}</div>
-            <div class="team-card-meta">
-              <span>المركز: #${st.rank}</span>
-              <span>${st.pts} نقطة</span>
-            </div>
-          </div>
-        `;
+        return `<div class="team-card ${state.selectedTeam === tName ? "selected" : ""}" onclick="state.selectedTeam='${tName}';renderAll();"><div class="team-card-name">${tName}</div><div class="team-card-coach">المدرب: ${tInfo.coach}</div><div class="team-card-meta"><span>المركز: #${st.rank}</span><span>${st.pts} نقطة</span></div></div>`;
       }).join("");
-
       const activeTeamName = TEAMS.includes(state.selectedTeam) ? state.selectedTeam : TEAMS[0];
       const activeTeamInfo = state.teamsInfo[activeTeamName] || { coach: "غير محدد", players: [] };
       const activeTeamStats = standingsByTeam[activeTeamName] || { played: 0, gd: 0, pts: 0, yellow: 0, red: 0 };
-
       document.getElementById("selectedTeamTitle").textContent = `فريق ${activeTeamName}`;
       const playersHtml = activeTeamInfo.players.length === 0
         ? `<p style="margin:0;color:var(--slate-600);font-size:0.84rem;">لم يتم تسجيل لاعبين لهذا الفريق بعد.</p>`
-        : activeTeamInfo.players.map((p, idx) => {
-            const numBadge = p.number ? `<span class="pill-badge">#${p.number}</span>` : "";
-            const delBtn = state.isAdmin
-              ? `<button class="btn-danger-sm" onclick="removeTeamPlayer(${idx})">حذف</button>`
-              : "";
-            return `
-              <div class="player-item">
-                <span>${p.name} ${numBadge}</span>
-                ${delBtn}
-              </div>
-            `;
-          }).join("");
-
-      document.getElementById("selectedTeamDetails").innerHTML = `
-        <div class="info-box">
-          <strong>المدرب:</strong> ${activeTeamInfo.coach} •
-          <strong>المركز:</strong> #${activeTeamStats.rank} •
-          <strong>النقاط:</strong> ${activeTeamStats.pts} •
-          <strong>الفارق:</strong> ${activeTeamStats.gd}
-        </div>
-        <div style="font-weight:800;color:var(--blue-900);margin-bottom:8px;font-size:0.9rem;">
-          قائمة اللاعبين (${activeTeamInfo.players.length})
-        </div>
-        ${playersHtml}
-      `;
-
+        : activeTeamInfo.players.map((p, idx) => `<div class="player-item"><span>${p.name} ${p.number ? `<span class="pill-badge">#${p.number}</span>` : ""}</span>${state.isAdmin ? `<button class="btn-danger-sm" onclick="removeTeamPlayer(${idx})">حذف</button>` : ""}</div>`).join("");
+      document.getElementById("selectedTeamDetails").innerHTML = `<div class="info-box"><strong>المدرب:</strong> ${activeTeamInfo.coach} • <strong>المركز:</strong> #${activeTeamStats.rank} • <strong>النقاط:</strong> ${activeTeamStats.pts} • <strong>الفارق:</strong> ${activeTeamStats.gd}</div><div style="font-weight:800;color:var(--blue-900);margin-bottom:8px;font-size:0.9rem;">قائمة اللاعبين (${activeTeamInfo.players.length})</div>${playersHtml}`;
       const scorersSorted = [...state.scorers].sort((a, b) => (Number(b.goals) || 0) - (Number(a.goals) || 0));
-      const scorersEl = document.getElementById("scorersList");
-      if (scorersSorted.length === 0) {
-        scorersEl.innerHTML = `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد أهداف مسجلة حتى الآن.</p>`;
-      } else {
-        scorersEl.innerHTML = `<div class="table-wrap"><table><thead><tr><th>#</th><th class="team-col">اللاعب</th><th class="team-col">الفريق</th><th>الأهداف</th></tr></thead><tbody>` +
-          scorersSorted.map((s, i) => `
-            <tr>
-              <td>${i + 1}</td>
-              <td class="team-col">${s.name}</td>
-              <td class="team-col">${s.team}</td>
-              <td class="pts-cell">${Number(s.goals) || 0}</td>
-            </tr>
-          `).join("") +
-          `</tbody></table></div>`;
-      }
-
+      document.getElementById("scorersList").innerHTML = scorersSorted.length === 0
+        ? `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد أهداف مسجلة حتى الآن.</p>`
+        : `<div class="table-wrap"><table><thead><tr><th>#</th><th class="team-col">اللاعب</th><th class="team-col">الفريق</th><th>الأهداف</th></tr></thead><tbody>${scorersSorted.map((s, i) => `<tr><td>${i + 1}</td><td class="team-col">${s.name}</td><td class="team-col">${s.team}</td><td class="pts-cell">${Number(s.goals) || 0}</td></tr>`).join("")}</tbody></table></div>`;
       const playerCardsEl = document.getElementById("playerCardsList");
       if (!state.playerCards.length) {
         playerCardsEl.innerHTML = `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد بطاقات مسجلة للاعبين حتى الآن.</p>`;
@@ -1902,38 +1598,14 @@
           const rBadge = c.red > 0 ? `<span class="card-badge-r">حمراء: ${c.red}</span>` : "";
           const warnText = (c.red > 0 || c.yellow >= 2) ? ` <span class="card-badge-r">تنبيه إيقاف</span>` : "";
           const delBtn = state.isAdmin ? `<button class="btn-danger-sm" onclick="removePlayerCard(${idx})">حذف</button>` : "";
-          return `
-            <div class="player-item">
-              <div>
-                <span>${c.name}</span>
-                <span style="color:var(--slate-600);font-size:0.78rem;"> (${c.team})</span>
-                ${warnText}
-              </div>
-              <div style="display:flex;align-items:center;gap:6px;">
-                ${yBadge}
-                ${rBadge}
-                ${delBtn}
-              </div>
-            </div>
-          `;
+          return `<div class="player-item"><div><span>${c.name}</span><span style="color:var(--slate-600);font-size:0.78rem;"> (${c.team})</span>${warnText}</div><div style="display:flex;align-items:center;gap:6px;">${yBadge}${rBadge}${delBtn}</div></div>`;
         }).join("");
       }
-
       const cardsSorted = [...list].sort((a, b) => (b.red * 3 + b.yellow) - (a.red * 3 + a.yellow));
-      document.getElementById("cardsBody").innerHTML = cardsSorted.map((r, i) => `
-        <tr>
-          <td>${i + 1}</td>
-          <td class="team-col">${r.team}</td>
-          <td>${r.yellow}</td>
-          <td>${r.red}</td>
-        </tr>
-      `).join("");
+      document.getElementById("cardsBody").innerHTML = cardsSorted.map((r, i) => `<tr><td>${i + 1}</td><td class="team-col">${r.team}</td><td>${r.yellow}</td><td>${r.red}</td></tr>`).join("");
     }
 
-    function selectRound(rNum) {
-      state.selectedRound = rNum;
-      renderAll();
-    }
+    function selectRound(rNum) { state.selectedRound = rNum; renderAll(); }
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(regs) {
