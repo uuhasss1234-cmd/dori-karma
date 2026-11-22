@@ -460,197 +460,8 @@
       white-space: nowrap;
     }
     .btn-outline {
-      border: 1px solid var(--blue-700);
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      background: var(--white);
-      color: var(--blue-700);
-      white-space: nowrap;
-    }
-    .btn-danger-sm {
-      border: none;
-      border-radius: 8px;
-      padding: 4px 8px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      cursor: pointer;
-      background: #fee2e2;
-      color: var(--red-600);
-    }
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--white);
-      border-top: 1px solid var(--slate-200);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      z-index: 30;
-      box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.06);
-    }
-    .nav-item {
-      border: none;
-      background: transparent;
-      padding: 9px 2px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--slate-600);
-      cursor: pointer;
-    }
-    .nav-item.active {
-      color: var(--blue-700);
-      background: var(--blue-50);
-    }
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 50;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal-card {
-      background: var(--white);
-      border-radius: 16px;
-      width: 100%;
-      max-width: 460px;
-      padding: 16px;
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .form-row { margin-bottom: 10px; }
-    .form-row label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; color: var(--slate-800); }
-    .form-row input, .form-row select, .form-row textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid var(--slate-200);
-      font-size: 0.86rem;
-      font-family: inherit;
-    }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .pill-badge {
-      display: inline-block;
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      background: var(--blue-50);
-      color: var(--blue-800);
-    }
-  </style>
-</head>
-<body>
-  <header class="app-header">
-    <div class="header-brand">
-      <div class="header-logo">
-        <img src="./IMG_8025.jpeg" alt="شعار دوري الكرمة" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
-        <svg viewBox="0 0 100 100" width="32" height="32" style="display:none;" aria-hidden="true">
-          <circle cx="50" cy="50" r="46" fill="#eff6ff" stroke="#1d4ed8" stroke-width="5"/>
-          <path d="M50 20 L74 34 L66 66 L34 66 L26 34 Z" fill="#1d4ed8" opacity="0.18"/>
-          <circle cx="50" cy="50" r="14" fill="#1d4ed8"/>
-        </svg>
-      </div>
-      <div class="header-titles">
-        <h1>دوري الكرمة - الدرجة الأولى</h1>
-        <p>اللجنه المركزيه الرياضيه في قضاء كرمة بني سعيد</p>
-      </div>
-    </div>
-    <div class="header-actions">
-      <span id="syncStatusBadge" class="sync-pill" onclick="syncFromCloud(true)" title="تحديث من السحابة">مزامنة</span>
-      <button id="roleToggleBtn" class="role-btn" onclick="handleRoleButton()">وضع المشاهد</button>
-    </div>
-  </header>
-
-  <main class="container">
-    <section id="tab-home" class="tab-panel">
-      <div class="hero-card">
-        <div class="emblem-wrap">
-          <img src="./IMG_8025.jpeg.JPG" alt="شعار اللجنة المركزية الرياضية" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
-          <svg viewBox="0 0 120 120" width="96" height="96" style="display:none;" aria-label="شعار البطولة">
-            <circle cx="60" cy="60" r="54" fill="#eff6ff" stroke="#1d4ed8" stroke-width="5"/>
-            <circle cx="60" cy="60" r="42" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3"/>
-            <text x="60" y="56" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a8a">دوري الكرمة</text>
-            <text x="60" y="74" text-anchor="middle" font-size="10" fill="#1d4ed8">الدرجة الأولى</text>
-          </svg>
-        </div>
-        <p class="hero-committee">اللجنه المركزيه الرياضيه في قضاء كرمة بني سعيد</p>
-        <h2 class="hero-title">دوري الكرمة - الدرجة الأولى</h2>
-        <p class="hero-sub">13 فريقاً • 13 جولة • ترتيب تلقائي للأهداف والنقاط والبطاقات والهدافين</p>
-
-        <div class="quick-grid">
-          <div class="quick-tile" onclick="switchTab('standings')">
-            <strong>موقف الدوري</strong>
-            <span>الترتيب والنقاط والأهداف</span>
-          </div>
-          <div class="quick-tile" onclick="switchTab('rounds')">
-            <strong>الجولات (1–13)</strong>
-            <span>النتائج والمواجهات</span>
-          </div>
-          <div class="quick-tile" onclick="switchTab('teams')">
-            <strong>الفرق واللاعبون</strong>
-            <span>المدربون وقوائم الفرق</span>
-          </div>
-          <div class="quick-tile" onclick="switchTab('stats')">
-            <strong>الإحصائيات</strong>
-            <span>الهدافون والبطاقات</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-head">
-          <h2>ملخص سريع للترتيب (أول 5 فرق)</h2>
-          <div class="head-actions">
-            <button class="btn-sm" onclick="shareStandings()">مشاركة الترتيب</button>
-            <button class="btn-outline" onclick="switchTab('standings')">الجدول الكامل</button>
-          </div>
-        </div>
-        <div id="homeTopStandings"></div>
-      </div>
-    </section>
-
-    <section id="tab-standings" class="tab-panel" style="display:none;">
-      <div class="section-card">
-        <div class="section-head">
-          <h2>جدول ترتيب دوري الكرمة - الدرجة الأولى</h2>
-          <div class="head-actions">
-            <span class="pill-badge" id="playedMatchesCount"></span>
-            <button class="btn-sm" onclick="shareStandings()">مشاركة الترتيب</button>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th class="team-col">الفريق</th>
-                <th>م</th>
-                <th>ف</th>
-                <th>ت</th>
-                <th>خ</th>
-                <th>له</th>
-                <th>عليه</th>
-                <th>فارق</th>
-                <th>نقاط</th>
-                <th>صفراء</th>
-                <th>حمراء</th>
-              </tr>
-            </thead>
-            <tbody id="standingsBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-    <section id="tab-rounds" class="tab-panel" style="display:none;">
+      
+     <section id="tab-rounds" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
           <h2 id="roundHeading">الجولة 1</h2>
@@ -1056,58 +867,27 @@
 
     function sanitizeRounds(roundsInput) {
       if (!Array.isArray(roundsInput) || roundsInput.length !== 13) return null;
-      return roundsInput.map((r, idx) => ({
-        round: Number(r && r.round) || (idx + 1),
-        bye: r && r.bye ? r.bye : TEAMS[idx % TEAMS.length],
-        matches: Array.isArray(r && r.matches) ? r.matches.map(sanitizeMatch) : []
-      }));
+      return roundsInput.map((r, idx) => {
+        const rNum = Number(r && r.round) || (idx + 1);
+        const byeTeam = r && r.bye ? r.bye : TEAMS[idx % TEAMS.length];
+        const rawMatches = Array.isArray(r && r.matches) ? r.matches.map(sanitizeMatch) : [];
+        return {
+          round: rNum,
+          bye: byeTeam,
+          matches: rNum >= 6 ? [] : rawMatches
+        };
+      });
     }
 
     function buildRemainingRounds() {
-      const playedPairs = new Set();
-      for (const r of INITIAL_ROUNDS) {
-        for (const m of r.matches) playedPairs.add([m.home, m.away].sort().join("||"));
-      }
-      const remainingPairs = [];
-      for (let i = 0; i < TEAMS.length; i++) {
-        for (let j = i + 1; j < TEAMS.length; j++) {
-          const pair = [TEAMS[i], TEAMS[j]];
-          if (!playedPairs.has([...pair].sort().join("||"))) remainingPairs.push(pair);
-        }
-      }
       const rounds = INITIAL_ROUNDS.map(r => ({
-        round: r.round, bye: r.bye, matches: r.matches.map(sanitizeMatch)
+        round: r.round,
+        bye: r.bye,
+        matches: r.matches.map(sanitizeMatch)
       }));
-      const usedGlobalPairs = new Set(playedPairs);
-      const pool = remainingPairs.filter(([a, b]) => !usedGlobalPairs.has([a, b].sort().join("||")));
       for (let rNum = 6; rNum <= 13; rNum++) {
         const byeTeam = TEAMS[(rNum - 1) % TEAMS.length];
-        const activeTeams = TEAMS.filter(t => t !== byeTeam);
-        const usedInRound = new Set();
-        const roundMatches = [];
-        for (let k = 0; k < pool.length && roundMatches.length < 6; k++) {
-          const [a, b] = pool[k];
-          const pairKey = [a, b].sort().join("||");
-          if (a === byeTeam || b === byeTeam || usedGlobalPairs.has(pairKey)) continue;
-          if (!usedInRound.has(a) && !usedInRound.has(b)) {
-            usedInRound.add(a); usedInRound.add(b); usedGlobalPairs.add(pairKey);
-            roundMatches.push({ home: a, away: b, hScore: null, aScore: null, hY: 0, aY: 0, hR: 0, aR: 0, hLineup: [], aLineup: [] });
-            pool.splice(k, 1); k--;
-          }
-        }
-        const leftTeams = activeTeams.filter(t => !usedInRound.has(t));
-        for (let i = 0; i < leftTeams.length && roundMatches.length < 6; i++) {
-          for (let j = i + 1; j < leftTeams.length; j++) {
-            const a = leftTeams[i], b = leftTeams[j];
-            const pairKey = [a, b].sort().join("||");
-            if (!usedInRound.has(a) && !usedInRound.has(b) && !usedGlobalPairs.has(pairKey)) {
-              usedInRound.add(a); usedInRound.add(b); usedGlobalPairs.add(pairKey);
-              roundMatches.push({ home: a, away: b, hScore: null, aScore: null, hY: 0, aY: 0, hR: 0, aR: 0, hLineup: [], aLineup: [] });
-              break;
-            }
-          }
-        }
-        rounds.push({ round: rNum, bye: byeTeam, matches: roundMatches });
+        rounds.push({ round: rNum, bye: byeTeam, matches: [] });
       }
       return rounds;
     }
@@ -1555,20 +1335,22 @@
       const activeRoundIdx = rIdx >= 0 ? rIdx : 0;
       document.getElementById("roundHeading").textContent = `الجولة ${currentRound.round}`;
       document.getElementById("byeTeamBadge").textContent = `راحة: ${currentRound.bye}`;
-      document.getElementById("roundMatchesList").innerHTML = currentRound.matches.map((m, mIdx) => {
-        const played = m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "";
-        const scoreText = played ? `${m.hScore} - ${m.aScore}` : "لم تُلعب";
-        const cardsText = (m.hY || m.aY || m.hR || m.aR) ? `صفراء: ${m.hY || 0} - ${m.aY || 0} | حمراء: ${m.hR || 0} - ${m.aR || 0}` : "بدون بطاقات مسجلة";
-        const hLineupArr = getMatchTeamLineupDisplay(m.home, m.hLineup);
-        const aLineupArr = getMatchTeamLineupDisplay(m.away, m.aLineup);
-        const hCoach = state.teamsInfo[m.home]?.coach && state.teamsInfo[m.home].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.home].coach})` : "";
-        const aCoach = state.teamsInfo[m.away]?.coach && state.teamsInfo[m.away].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.away].coach})` : "";
-        const hItemsHtml = hLineupArr.length > 0 ? `<ul class="lineup-list">${hLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
-        const aItemsHtml = aLineupArr.length > 0 ? `<ul class="lineup-list">${aLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
-        const lineupAction = state.isAdmin ? `<button class="btn-outline" onclick="openLineupModal(${activeRoundIdx}, ${mIdx})">تشكيلة المباراة</button>` : "";
-        const adminAction = state.isAdmin ? `<button class="btn-sm" onclick="openMatchModal(${activeRoundIdx}, ${mIdx})">تعديل</button>` : "";
-        return `<div class="match-card"><div class="match-row"><div class="team-home"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.home}')">${m.home}</button></div><div class="score-box">${scoreText}</div><div class="team-away"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.away}')">${m.away}</button></div></div><div class="match-meta"><span>${cardsText}</span><div class="head-actions">${lineupAction}${adminAction}</div></div><div class="lineup-box"><div class="lineup-title"><span>تشكيلة الفريقين قبل المباراة</span><span class="pill-badge">${played ? "انتهت" : "قبل المباراة"}</span></div><div class="lineup-grid"><div class="lineup-col"><strong>${m.home}${hCoach}</strong>${hItemsHtml}</div><div class="lineup-col"><strong>${m.away}${aCoach}</strong>${aItemsHtml}</div></div></div></div>`;
-      }).join("");
+      document.getElementById("roundMatchesList").innerHTML = currentRound.matches.length === 0
+        ? `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد مواجهات مسجلة في هذه الجولة حالياً.</p>`
+        : currentRound.matches.map((m, mIdx) => {
+          const played = m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "";
+          const scoreText = played ? `${m.hScore} - ${m.aScore}` : "لم تُلعب";
+          const cardsText = (m.hY || m.aY || m.hR || m.aR) ? `صفراء: ${m.hY || 0} - ${m.aY || 0} | حمراء: ${m.hR || 0} - ${m.aR || 0}` : "بدون بطاقات مسجلة";
+          const hLineupArr = getMatchTeamLineupDisplay(m.home, m.hLineup);
+          const aLineupArr = getMatchTeamLineupDisplay(m.away, m.aLineup);
+          const hCoach = state.teamsInfo[m.home]?.coach && state.teamsInfo[m.home].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.home].coach})` : "";
+          const aCoach = state.teamsInfo[m.away]?.coach && state.teamsInfo[m.away].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.away].coach})` : "";
+          const hItemsHtml = hLineupArr.length > 0 ? `<ul class="lineup-list">${hLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
+          const aItemsHtml = aLineupArr.length > 0 ? `<ul class="lineup-list">${aLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
+          const lineupAction = state.isAdmin ? `<button class="btn-outline" onclick="openLineupModal(${activeRoundIdx}, ${mIdx})">تشكيلة المباراة</button>` : "";
+          const adminAction = state.isAdmin ? `<button class="btn-sm" onclick="openMatchModal(${activeRoundIdx}, ${mIdx})">تعديل</button>` : "";
+          return `<div class="match-card"><div class="match-row"><div class="team-home"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.home}')">${m.home}</button></div><div class="score-box">${scoreText}</div><div class="team-away"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.away}')">${m.away}</button></div></div><div class="match-meta"><span>${cardsText}</span><div class="head-actions">${lineupAction}${adminAction}</div></div><div class="lineup-box"><div class="lineup-title"><span>تشكيلة الفريقين قبل المباراة</span><span class="pill-badge">${played ? "انتهت" : "قبل المباراة"}</span></div><div class="lineup-grid"><div class="lineup-col"><strong>${m.home}${hCoach}</strong>${hItemsHtml}</div><div class="lineup-col"><strong>${m.away}${aCoach}</strong>${aItemsHtml}</div></div></div></div>`;
+        }).join("");
       const standingsByTeam = {};
       list.forEach((row, index) => { standingsByTeam[row.team] = { ...row, rank: index + 1 }; });
       document.getElementById("teamsCardsGrid").innerHTML = TEAMS.map(tName => {
