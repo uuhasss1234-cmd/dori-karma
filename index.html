@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -99,6 +99,7 @@
       background: rgba(255,255,255,0.16);
       color: var(--white);
       white-space: nowrap;
+      cursor: pointer;
     }
     .role-btn {
       border: 1.5px solid rgba(255,255,255,0.45);
@@ -567,11 +568,11 @@
         <div class="grid-2">
           <div class="form-row">
             <label id="homeScoreLabel" for="homeScoreInput">أهداف المضيف</label>
-            <input id="homeScoreInput" type="number" min="0" max="99" required />
+            <input id="homeScoreInput" type="number" min="0" max="99" />
           </div>
           <div class="form-row">
             <label id="awayScoreLabel" for="awayScoreInput">أهداف الضيف</label>
-            <input id="awayScoreInput" type="number" min="0" max="99" required />
+            <input id="awayScoreInput" type="number" min="0" max="99" />
           </div>
         </div>
         <div class="grid-2">
@@ -625,9 +626,10 @@
       </form>
     </div>
   </div>
+
   <script>
     const _K = "HASSAN_\\HASSAN";
-    const STORAGE_KEY = "dori_karma_first_div_state_v1";
+    const STORAGE_KEY = "dori_karma_first_div_state_v2";
     const FIREBASE_DB_URL = "https://dori-karma-default-rtdb.firebaseio.com/leagueState.json";
 
     const TEAMS = [
@@ -709,6 +711,34 @@
       }
     ];
 
+    function sanitizeMatch(m) {
+      const hs = (m && m.hScore !== null && m.hScore !== undefined && m.hScore !== "" && Number.isFinite(Number(m.hScore)))
+        ? Math.max(0, Math.floor(Number(m.hScore)))
+        : null;
+      const as = (m && m.aScore !== null && m.aScore !== undefined && m.aScore !== "" && Number.isFinite(Number(m.aScore)))
+        ? Math.max(0, Math.floor(Number(m.aScore)))
+        : null;
+      return {
+        home: m.home,
+        away: m.away,
+        hScore: hs,
+        aScore: as,
+        hY: Math.max(0, Math.floor(Number(m && m.hY) || 0)),
+        aY: Math.max(0, Math.floor(Number(m && m.aY) || 0)),
+        hR: Math.max(0, Math.floor(Number(m && m.hR) || 0)),
+        aR: Math.max(0, Math.floor(Number(m && m.aR) || 0))
+      };
+    }
+
+    function sanitizeRounds(roundsInput) {
+      if (!Array.isArray(roundsInput) || roundsInput.length !== 13) return null;
+      return roundsInput.map((r, idx) => ({
+        round: Number(r && r.round) || (idx + 1),
+        bye: r && r.bye ? r.bye : TEAMS[idx % TEAMS.length],
+        matches: Array.isArray(r && r.matches) ? r.matches.map(sanitizeMatch) : []
+      }));
+    }
+
     function buildRemainingRounds() {
       const playedPairs = new Set();
       for (const r of INITIAL_ROUNDS) {
@@ -728,7 +758,11 @@
         }
       }
 
-      const rounds = [...INITIAL_ROUNDS];
+      const rounds = INITIAL_ROUNDS.map(r => ({
+        round: r.round,
+        bye: r.bye,
+        matches: r.matches.map(sanitizeMatch)
+      }));
       const pool = [...remainingPairs];
 
       for (let rNum = 6; rNum <= 13; rNum++) {
@@ -782,11 +816,12 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && Array.isArray(parsed.rounds) && parsed.rounds.length === 13) {
+          const cleanRounds = sanitizeRounds(parsed && parsed.rounds);
+          if (cleanRounds) {
             return {
               isAdmin: false,
               selectedRound: 5,
-              rounds: parsed.rounds,
+              rounds: cleanRounds,
               scorers: Array.isArray(parsed.scorers) ? parsed.scorers : []
             };
           }
@@ -843,8 +878,9 @@
           return;
         }
         const data = await res.json();
-        if (data && Array.isArray(data.rounds) && data.rounds.length === 13) {
-          state.rounds = data.rounds;
+        const cleanRounds = sanitizeRounds(data && data.rounds);
+        if (cleanRounds) {
+          state.rounds = cleanRounds;
           state.scorers = Array.isArray(data.scorers) ? data.scorers : [];
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -896,41 +932,48 @@
           const h = map[m.home];
           const a = map[m.away];
           if (!h || !a) continue;
-          h.yellow += Number(m.hY || 0);
-          a.yellow += Number(m.aY || 0);
-          h.red += Number(m.hR || 0);
-          a.red += Number(m.aR || 0);
+          h.yellow += Number(m.hY) || 0;
+          a.yellow += Number(m.aY) || 0;
+          h.red += Number(m.hR) || 0;
+          a.red += Number(m.aR) || 0;
 
           if (m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "") {
-            playedMatchesCount++;
             const hs = Number(m.hScore);
             const as = Number(m.aScore);
-            h.played++;
-            a.played++;
-            h.gf += hs;
-            h.ga += as;
-            a.gf += as;
-            a.ga += hs;
+            if (Number.isFinite(hs) && Number.isFinite(as)) {
+              playedMatchesCount++;
+              h.played++;
+              a.played++;
+              h.gf += hs;
+              h.ga += as;
+              a.gf += as;
+              a.ga += hs;
 
-            if (hs > as) {
-              h.win++;
-              h.pts += 3;
-              a.loss++;
-            } else if (as > hs) {
-              a.win++;
-              a.pts += 3;
-              h.loss++;
-            } else {
-              h.draw++;
-              a.draw++;
-              h.pts += 1;
-              a.pts += 1;
+              if (hs > as) {
+                h.win++;
+                h.pts += 3;
+                a.loss++;
+              } else if (as > hs) {
+                a.win++;
+                a.pts += 3;
+                h.loss++;
+              } else {
+                h.draw++;
+                a.draw++;
+                h.pts += 1;
+                a.pts += 1;
+              }
             }
           }
         }
       }
 
-      const list = Object.values(map).map(row => ({ ...row, gd: row.gf - row.ga }));
+      const list = Object.values(map).map(row => {
+        const gf = Number(row.gf) || 0;
+        const ga = Number(row.ga) || 0;
+        return { ...row, gf, ga, gd: gf - ga, pts: Number(row.pts) || 0 };
+      });
+
       list.sort((x, y) => {
         if (y.pts !== x.pts) return y.pts - x.pts;
         if (y.gd !== x.gd) return y.gd - x.gd;
@@ -991,12 +1034,12 @@
       document.getElementById("homeRedLabel").textContent = `حمراء ${m.home}`;
       document.getElementById("awayRedLabel").textContent = `حمراء ${m.away}`;
 
-      document.getElementById("homeScoreInput").value = m.hScore === null ? "" : m.hScore;
-      document.getElementById("awayScoreInput").value = m.aScore === null ? "" : m.aScore;
-      document.getElementById("homeYellowInput").value = m.hY || 0;
-      document.getElementById("awayYellowInput").value = m.aY || 0;
-      document.getElementById("homeRedInput").value = m.hR || 0;
-      document.getElementById("awayRedInput").value = m.aR || 0;
+      document.getElementById("homeScoreInput").value = (m.hScore === null || m.hScore === undefined) ? "" : m.hScore;
+      document.getElementById("awayScoreInput").value = (m.aScore === null || m.aScore === undefined) ? "" : m.aScore;
+      document.getElementById("homeYellowInput").value = Number(m.hY) || 0;
+      document.getElementById("awayYellowInput").value = Number(m.aY) || 0;
+      document.getElementById("homeRedInput").value = Number(m.hR) || 0;
+      document.getElementById("awayRedInput").value = Number(m.aR) || 0;
 
       document.getElementById("matchModal").classList.add("open");
     }
@@ -1009,12 +1052,12 @@
       const hsRaw = document.getElementById("homeScoreInput").value;
       const asRaw = document.getElementById("awayScoreInput").value;
 
-      m.hScore = hsRaw === "" ? null : Math.max(0, Number(hsRaw));
-      m.aScore = asRaw === "" ? null : Math.max(0, Number(asRaw));
-      m.hY = Math.max(0, Number(document.getElementById("homeYellowInput").value || 0));
-      m.aY = Math.max(0, Number(document.getElementById("awayYellowInput").value || 0));
-      m.hR = Math.max(0, Number(document.getElementById("homeRedInput").value || 0));
-      m.aR = Math.max(0, Number(document.getElementById("awayRedInput").value || 0));
+      m.hScore = hsRaw === "" ? null : Math.max(0, Math.floor(Number(hsRaw) || 0));
+      m.aScore = asRaw === "" ? null : Math.max(0, Math.floor(Number(asRaw) || 0));
+      m.hY = Math.max(0, Math.floor(Number(document.getElementById("homeYellowInput").value) || 0));
+      m.aY = Math.max(0, Math.floor(Number(document.getElementById("awayYellowInput").value) || 0));
+      m.hR = Math.max(0, Math.floor(Number(document.getElementById("homeRedInput").value) || 0));
+      m.aR = Math.max(0, Math.floor(Number(document.getElementById("awayRedInput").value) || 0));
 
       saveState();
       closeModal("matchModal");
@@ -1035,12 +1078,12 @@
       if (!state.isAdmin) return;
       const name = document.getElementById("scorerNameInput").value.trim();
       const team = document.getElementById("scorerTeamSelect").value;
-      const goals = Math.max(1, Number(document.getElementById("scorerGoalsInput").value || 1));
+      const goals = Math.max(1, Math.floor(Number(document.getElementById("scorerGoalsInput").value) || 1));
       if (!name) return;
 
       const existing = state.scorers.find(s => s.name === name && s.team === team);
       if (existing) {
-        existing.goals += goals;
+        existing.goals = (Number(existing.goals) || 0) + goals;
       } else {
         state.scorers.push({ name, team, goals });
       }
@@ -1152,7 +1195,7 @@
         `;
       }).join("");
 
-      const scorersSorted = [...state.scorers].sort((a, b) => b.goals - a.goals);
+      const scorersSorted = [...state.scorers].sort((a, b) => (Number(b.goals) || 0) - (Number(a.goals) || 0));
       const scorersEl = document.getElementById("scorersList");
       if (scorersSorted.length === 0) {
         scorersEl.innerHTML = `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد أهداف مسجلة حتى الآن.</p>`;
@@ -1163,7 +1206,7 @@
               <td>${i + 1}</td>
               <td class="team-col">${s.name}</td>
               <td class="team-col">${s.team}</td>
-              <td class="pts-cell">${s.goals}</td>
+              <td class="pts-cell">${Number(s.goals) || 0}</td>
             </tr>
           `).join("") +
           `</tbody></table></div>`;
@@ -1186,11 +1229,10 @@
     }
 
     if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(regs) {
-    for (let reg of regs) reg.unregister();
-  });
-}
-
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (let reg of regs) reg.unregister();
+      });
+    }
 
     renderAll();
     syncFromCloud(false);
