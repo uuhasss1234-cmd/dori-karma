@@ -234,20 +234,40 @@ function syncCloud(manual){
   }).catch(()=>syncTxt.textContent="محلي");
 }
 
-function calcTable(){
+ function calcTable(){
   const m={};TEAMS.forEach(t=>m[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0,y:0,r:0});
   let played=0;
   st.rounds.forEach(r=>r.matches.forEach(x=>{
     const h=m[x.home],a=m[x.away];if(!h||!a)return;
-    h.y+=+x.hY||0;a.y+=+x.aY||0;h.r+=+x.hR||0;a.r+=+x.aR||0;
-    if(x.hScore!==null&&x.aScore!==null&&x.hScore!==""&&x.aScore!==""){
-      const hs=+x.hScore,as=+x.aScore;played++;
-      h.p++;a.p++;h.gf+=hs;h.ga+=as;a.gf+=as;a.ga+=hs;
-      if(hs>as){h.w++;h.pts+=3;a.l++}else if(as>hs){a.w++;a.pts+=3;h.l++}else{h.d++;a.d++;h.pts++;a.pts++}
+    h.y+=Number.isFinite(+x.hY)?+x.hY:0;
+    a.y+=Number.isFinite(+x.aY)?+x.aY:0;
+    h.r+=Number.isFinite(+x.hR)?+x.hR:0;
+    a.r+=Number.isFinite(+x.aR)?+x.aR:0;
+    const hsRaw=x.hScore,asRaw=x.aScore;
+    if(hsRaw!==null&&hsRaw!==undefined&&hsRaw!==""&&asRaw!==null&&asRaw!==undefined&&asRaw!==""){
+      const hs=+hsRaw,as=+asRaw;
+      if(Number.isFinite(hs)&&Number.isFinite(as)){
+        played++;
+        h.p++;a.p++;
+        h.gf+=hs;h.ga+=as;a.gf+=as;a.ga+=hs;
+        if(hs>as){h.w++;h.pts+=3;a.l++}
+        else if(as>hs){a.w++;a.pts+=3;h.l++}
+        else{h.d++;a.d++;h.pts++;a.pts++}
+      }
     }
   }));
-  st.cards.forEach(c=>{if(m[c.team]){m[c.team].y+=+c.yellow||0;m[c.team].r+=+c.red||0}});
-  const arr=Object.values(m).map(x=>({...x,gd:x.gf-x.ga}));
+  st.cards.forEach(c=>{
+    if(m[c.team]){
+      m[c.team].y+=Number.isFinite(+c.yellow)?+c.yellow:0;
+      m[c.team].r+=Number.isFinite(+c.red)?+c.red:0;
+    }
+  });
+  const arr=Object.values(m).map(x=>{
+    const gf=Number.isFinite(x.gf)?x.gf:0;
+    const ga=Number.isFinite(x.ga)?x.ga:0;
+    const pts=Number.isFinite(x.pts)?x.pts:0;
+    return {...x,gf,ga,gd:gf-ga,pts};
+  });
   arr.sort((a,b)=>(b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf)||a.team.localeCompare(b.team,"ar"));
   return {arr,played};
 }
