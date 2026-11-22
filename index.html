@@ -326,10 +326,11 @@ function render(){
   teamsGrid.innerHTML=TEAMS.map(t=>`<div class="t-box ${st.team===t?"sel":""}" onclick="st.team='${t}';render()"><strong>${t}</strong><div class="sub">المدرب: ${st.coaches[t]?.coach||"غير محدد"}</div><div class="sub">المركز: #${rankMap[t]?.rk||"-"} • ${rankMap[t]?.pts||0} نقطة</div></div>`).join("");
   const ti=rankMap[st.team]||{rk:"-",pts:0,gd:0};
   teamInfoBox.innerHTML=`<strong>${st.team}</strong> — المدرب: ${st.coaches[st.team]?.coach||"غير محدد"} — المركز: #${ti.rk} — النقاط: ${ti.pts} — الفارق: ${ti.gd}`;
-  const sc=[...st.scorers].sort((a,b)=>(b.goals||0)-(a.goals||0));
-  scorersBox.innerHTML=!sc.length?`<div class="sub">لا توجد أهداف مسجلة.</div>`:sc.map((s,i)=>`<div class="match">${i+1}. <strong>${s.name}</strong> (${s.team}) — <span class="pts">${s.goals}</span></div>`).join("");
-  cardsBox.innerHTML=!st.cards.length?`<div class="sub">لا توجد بطاقات مسجلة.</div>`:st.cards.map(c=>`<div class="match"><strong>${c.name}</strong> (${c.team}) — صفراء: ${c.yellow} | حمراء: ${c.red}</div>`).join("");
+     const sc=[...st.scorers].sort((a,b)=>(b.goals||0)-(a.goals||0));
+  scorersBox.innerHTML=!sc.length?`<div class="sub">لا توجد أهداف مسجلة.</div>`:sc.map(s=>{const idx=st.scorers.indexOf(s);return `<div class="match" style="display:flex;justify-content:space-between;align-items:center"><div><strong>${s.name}</strong> (${s.team}) — <span class="pts">${s.goals}</span></div>${st.isAdmin?`<button class="btn" style="background:#dc2626" onclick="st.scorers.splice(${idx},1);saveAll();render()">حذف</button>`:""}</div>`}).join("");
+  cardsBox.innerHTML=!st.cards.length?`<div class="sub">لا توجد بطاقات مسجلة.</div>`:st.cards.map((c,i)=>`<div class="match" style="display:flex;justify-content:space-between;align-items:center"><div><strong>${c.name}</strong> (${c.team}) — صفراء: ${c.yellow} | حمراء: ${c.red}</div>${st.isAdmin?`<button class="btn" style="background:#dc2626" onclick="st.cards.splice(${i},1);saveAll();render()">حذف</button>`:""}</div>`).join("");
 }
+
 
 render();
 syncCloud(false);
