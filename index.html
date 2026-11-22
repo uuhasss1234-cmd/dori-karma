@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -331,8 +331,6 @@
     }
     .lineup-box {
       margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid var(--slate-100);
       background: var(--slate-50);
       border-radius: 10px;
       padding: 8px 10px;
@@ -573,7 +571,6 @@
   </header>
 
   <main class="container">
-    <!-- الرئيسية -->
     <section id="tab-home" class="tab-panel">
       <div class="hero-card">
         <div class="emblem-wrap">
@@ -621,7 +618,6 @@
       </div>
     </section>
 
-    <!-- الترتيب -->
     <section id="tab-standings" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
@@ -655,7 +651,6 @@
       </div>
     </section>
 
-    <!-- الجولات -->
     <section id="tab-rounds" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
@@ -670,7 +665,6 @@
       </div>
     </section>
 
-    <!-- الفرق واللاعبون -->
     <section id="tab-teams" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
@@ -692,7 +686,6 @@
       </div>
     </section>
 
-    <!-- الإحصائيات -->
     <section id="tab-stats" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
@@ -739,7 +732,6 @@
     <button class="nav-item" data-tab="stats" onclick="switchTab('stats')">الإحصائيات</button>
   </nav>
 
-  <!-- نافذة رمز المشرف -->
   <div id="pinModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 style="margin:0 0 10px;color:var(--blue-900);">دخول وضع المشرف</h3>
@@ -757,7 +749,6 @@
     </div>
   </div>
 
-  <!-- نافذة تعديل المباراة -->
   <div id="matchModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 id="matchModalTitle" style="margin:0 0 12px;color:var(--blue-900);">تعديل المباراة</h3>
@@ -800,7 +791,6 @@
     </div>
   </div>
 
-  <!-- نافذة تحديد تشكيلة المباراة قبل اللعب -->
   <div id="lineupModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 id="lineupModalTitle" style="margin:0 0 12px;color:var(--blue-900);">تشكيلة المباراة</h3>
@@ -823,7 +813,6 @@
     </div>
   </div>
 
-  <!-- نافذة إضافة هدف -->
   <div id="scorerModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 style="margin:0 0 12px;color:var(--blue-900);">إضافة هدف للاعب</h3>
@@ -848,7 +837,6 @@
     </div>
   </div>
 
-  <!-- نافذة تعديل المدرب -->
   <div id="coachModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 id="coachModalTitle" style="margin:0 0 12px;color:var(--blue-900);">تعديل مدرب الفريق</h3>
@@ -865,7 +853,6 @@
     </div>
   </div>
 
-  <!-- نافذة إضافة لاعب للفريق -->
   <div id="playerModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 id="playerModalTitle" style="margin:0 0 12px;color:var(--blue-900);">إضافة لاعب للفريق</h3>
@@ -886,7 +873,6 @@
     </div>
   </div>
 
-  <!-- نافذة تسجيل بطاقة لاعب -->
   <div id="playerCardModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 style="margin:0 0 12px;color:var(--blue-900);">تسجيل بطاقة للاعب</h3>
@@ -917,7 +903,6 @@
     </div>
   </div>
 
-  <!-- نافذة نص المشاركة -->
   <div id="shareModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 id="shareModalTitle" style="margin:0 0 10px;color:var(--blue-900);">مشاركة النص</h3>
@@ -1351,8 +1336,7 @@
       closeModal("lineupModal");
       renderAll();
     }
-
-    function computeStandings() {
+     function computeStandings() {
       const map = {};
       for (const name of TEAMS) {
         map[name] = {
@@ -1837,7 +1821,6 @@
         `;
       }).join("");
 
-      // تبويب الفرق واللاعبون
       const standingsByTeam = {};
       list.forEach((row, index) => {
         standingsByTeam[row.team] = { ...row, rank: index + 1 };
@@ -1892,7 +1875,6 @@
         ${playersHtml}
       `;
 
-      // الهدافون
       const scorersSorted = [...state.scorers].sort((a, b) => (Number(b.goals) || 0) - (Number(a.goals) || 0));
       const scorersEl = document.getElementById("scorersList");
       if (scorersSorted.length === 0) {
@@ -1910,7 +1892,6 @@
           `</tbody></table></div>`;
       }
 
-      // البطاقات حسب اللاعبين
       const playerCardsEl = document.getElementById("playerCardsList");
       if (!state.playerCards.length) {
         playerCardsEl.innerHTML = `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد بطاقات مسجلة للاعبين حتى الآن.</p>`;
@@ -1937,7 +1918,6 @@
         }).join("");
       }
 
-      // البطاقات حسب الفرق
       const cardsSorted = [...list].sort((a, b) => (b.red * 3 + b.yellow) - (a.red * 3 + a.yellow));
       document.getElementById("cardsBody").innerHTML = cardsSorted.map((r, i) => `
         <tr>
@@ -1965,4 +1945,3 @@
   </script>
 </body>
 </html>
- 
