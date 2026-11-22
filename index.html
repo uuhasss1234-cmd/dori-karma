@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -215,8 +215,49 @@
       font-weight: 800;
       color: var(--blue-900);
     }
-    .head-
-    <section id="tab-rounds" class="tab-panel" style="display:none;">
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--slate-200);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      background: var(--white);
+    }
+    th {
+      background: var(--blue-800);
+      color: var(--white);
+      padding: 9px 7px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-align: center;
+    }
+    th.team-col, td.team-col {
+      text-align: right;
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+    td {
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--slate-100);
+      text-align: center;
+      font-weight: 600;
+    }
+    tr:nth-child(even) td { background: var(--blue-50); }
+    .pts-cell { color: var(--blue-800); font-weight: 900; }
+    .team-link-btn {
+      background: none;
+      border: none;
+      padding: 0;
+          <section id="tab-rounds" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
           <h2 id="roundHeading">الجولة 1</h2>
@@ -244,7 +285,6 @@
           <h2 id="selectedTeamTitle">تفاصيل الفريق</h2>
           <div class="head-actions">
             <button id="editCoachBtn" class="btn-outline" style="display:none;" onclick="openCoachModal()">تعديل المدرب</button>
-            <button id="addPlayerBtn" class="btn-sm" style="display:none;" onclick="openPlayerModal()">+ إضافة لاعب</button>
           </div>
         </div>
         <div id="selectedTeamDetails"></div>
@@ -356,28 +396,6 @@
     </div>
   </div>
 
-  <div id="lineupModal" class="modal-backdrop">
-    <div class="modal-card">
-      <h3 id="lineupModalTitle" style="margin:0 0 12px;color:var(--blue-900);">تشكيلة المباراة</h3>
-      <form onsubmit="saveLineupEdit(event)">
-        <div class="grid-2">
-          <div class="form-row">
-            <label id="homeLineupLabel">تشكيلة المضيف</label>
-            <div id="homeLineupChecks" style="max-height:200px;overflow-y:auto;border:1px solid var(--slate-200);border-radius:10px;padding:6px;"></div>
-          </div>
-          <div class="form-row">
-            <label id="awayLineupLabel">تشكيلة الضيف</label>
-            <div id="awayLineupChecks" style="max-height:200px;overflow-y:auto;border:1px solid var(--slate-200);border-radius:10px;padding:6px;"></div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
-          <button type="button" class="btn-outline" onclick="closeModal('lineupModal')">إلغاء</button>
-          <button type="submit" class="btn-sm">حفظ التشكيلة</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <div id="scorerModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 style="margin:0 0 12px;color:var(--blue-900);">إضافة هدف للاعب</h3>
@@ -413,26 +431,6 @@
         <div style="display:flex;gap:8px;justify-content:flex-end;">
           <button type="button" class="btn-outline" onclick="closeModal('coachModal')">إلغاء</button>
           <button type="submit" class="btn-sm">حفظ</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div id="playerModal" class="modal-backdrop">
-    <div class="modal-card">
-      <h3 id="playerModalTitle" style="margin:0 0 12px;color:var(--blue-900);">إضافة لاعب للفريق</h3>
-      <form onsubmit="saveTeamPlayer(event)">
-        <div class="form-row">
-          <label for="playerNameInput">اسم اللاعب</label>
-          <input id="playerNameInput" type="text" required />
-        </div>
-        <div class="form-row">
-          <label for="playerNumberInput">رقم القميص (اختياري)</label>
-          <input id="playerNumberInput" type="number" min="1" max="99" placeholder="مثال: 9" />
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;">
-          <button type="button" class="btn-outline" onclick="closeModal('playerModal')">إلغاء</button>
-          <button type="submit" class="btn-sm">إضافة</button>
         </div>
       </form>
     </div>
@@ -566,7 +564,7 @@
 
     function buildDefaultTeamsInfo() {
       const info = {};
-      for (const name of TEAMS) info[name] = { coach: "غير محدد", players: [] };
+      for (const name of TEAMS) info[name] = { coach: "غير محدد" };
       return info;
     }
 
@@ -577,12 +575,6 @@
         const entry = rawInfo[name];
         if (entry && typeof entry === "object") {
           base[name].coach = typeof entry.coach === "string" && entry.coach.trim() ? entry.coach.trim() : "غير محدد";
-          base[name].players = Array.isArray(entry.players)
-            ? entry.players.filter(p => p && typeof p.name === "string" && p.name.trim()).map(p => ({
-                name: p.name.trim(),
-                number: p.number !== null && p.number !== undefined && p.number !== "" ? Number(p.number) : null
-              }))
-            : [];
         }
       }
       return base;
@@ -614,9 +606,7 @@
         hY: Math.max(0, Math.floor(Number(m && m.hY) || 0)),
         aY: Math.max(0, Math.floor(Number(m && m.aY) || 0)),
         hR: Math.max(0, Math.floor(Number(m && m.hR) || 0)),
-        aR: Math.max(0, Math.floor(Number(m && m.aR) || 0)),
-        hLineup: Array.isArray(m && m.hLineup) ? m.hLineup.filter(x => typeof x === "string" && x.trim()) : [],
-        aLineup: Array.isArray(m && m.aLineup) ? m.aLineup.filter(x => typeof x === "string" && x.trim()) : []
+        aR: Math.max(0, Math.floor(Number(m && m.aR) || 0))
       };
     }
 
@@ -681,7 +671,6 @@
 
     const state = loadState();
     let editingMatchRef = null;
-    let editingLineupRef = null;
 
     function setSyncBadge(text) {
       const el = document.getElementById("syncStatusBadge");
@@ -754,49 +743,6 @@
       } catch (e) {}
       pushToCloud();
     }
-    function getMatchTeamLineupDisplay(teamName, customLineup) {
-      const roster = state.teamsInfo[teamName]?.players || [];
-      if (Array.isArray(customLineup) && customLineup.length > 0) {
-        return customLineup.map(pName => {
-          const found = roster.find(r => r.name === pName);
-          return found && found.number ? `${found.name} (#${found.number})` : pName;
-        });
-      }
-      return roster.map(p => p.number ? `${p.name} (#${p.number})` : p.name);
-    }
-
-    function openLineupModal(roundIdx, matchIdx) {
-      if (!state.isAdmin) return;
-      editingLineupRef = { roundIdx, matchIdx };
-      const m = state.rounds[roundIdx].matches[matchIdx];
-      document.getElementById("lineupModalTitle").textContent = `تشكيلة قبل المباراة: ${m.home} × ${m.away}`;
-      document.getElementById("homeLineupLabel").textContent = `لاعبو ${m.home}`;
-      document.getElementById("awayLineupLabel").textContent = `لاعبو ${m.away}`;
-      const hRoster = state.teamsInfo[m.home]?.players || [];
-      const aRoster = state.teamsInfo[m.away]?.players || [];
-      const hSelected = Array.isArray(m.hLineup) && m.hLineup.length > 0 ? m.hLineup : hRoster.map(p => p.name);
-      const aSelected = Array.isArray(m.aLineup) && m.aLineup.length > 0 ? m.aLineup : aRoster.map(p => p.name);
-      document.getElementById("homeLineupChecks").innerHTML = hRoster.length === 0
-        ? `<div style="font-size:0.75rem;color:var(--slate-600);padding:6px;">أضف لاعبين لـ ${m.home} من تبويب الفرق أولاً.</div>`
-        : hRoster.map(p => `<label class="check-player-row"><input type="checkbox" class="home-lineup-cb" value="${p.name}" ${hSelected.includes(p.name) ? "checked" : ""} /><span>${p.name}${p.number ? ` (#${p.number})` : ""}</span></label>`).join("");
-      document.getElementById("awayLineupChecks").innerHTML = aRoster.length === 0
-        ? `<div style="font-size:0.75rem;color:var(--slate-600);padding:6px;">أضف لاعبين لـ ${m.away} من تبويب الفرق أولاً.</div>`
-        : aRoster.map(p => `<label class="check-player-row"><input type="checkbox" class="away-lineup-cb" value="${p.name}" ${aSelected.includes(p.name) ? "checked" : ""} /><span>${p.name}${p.number ? ` (#${p.number})` : ""}</span></label>`).join("");
-      document.getElementById("lineupModal").classList.add("open");
-    }
-
-    function saveLineupEdit(e) {
-      e.preventDefault();
-      if (!state.isAdmin || !editingLineupRef) return;
-      const { roundIdx, matchIdx } = editingLineupRef;
-      const m = state.rounds[roundIdx].matches[matchIdx];
-      m.hLineup = Array.from(document.querySelectorAll(".home-lineup-cb:checked")).map(cb => cb.value);
-      m.aLineup = Array.from(document.querySelectorAll(".away-lineup-cb:checked")).map(cb => cb.value);
-      saveState();
-      closeModal("lineupModal");
-      renderAll();
-    }
-
     function computeStandings() {
       const map = {};
       for (const name of TEAMS) {
@@ -951,41 +897,10 @@
       if (!state.isAdmin) return;
       const tName = state.selectedTeam;
       const val = document.getElementById("coachNameInput").value.trim();
-      if (!state.teamsInfo[tName]) state.teamsInfo[tName] = { coach: "غير محدد", players: [] };
+      if (!state.teamsInfo[tName]) state.teamsInfo[tName] = { coach: "غير محدد" };
       state.teamsInfo[tName].coach = val || "غير محدد";
       saveState();
       closeModal("coachModal");
-      renderAll();
-    }
-
-    function openPlayerModal() {
-      if (!state.isAdmin) return;
-      document.getElementById("playerModalTitle").textContent = `إضافة لاعب إلى ${state.selectedTeam}`;
-      document.getElementById("playerNameInput").value = "";
-      document.getElementById("playerNumberInput").value = "";
-      document.getElementById("playerModal").classList.add("open");
-    }
-
-    function saveTeamPlayer(e) {
-      e.preventDefault();
-      if (!state.isAdmin) return;
-      const tName = state.selectedTeam;
-      const name = document.getElementById("playerNameInput").value.trim();
-      const numRaw = document.getElementById("playerNumberInput").value;
-      if (!name) return;
-      if (!state.teamsInfo[tName]) state.teamsInfo[tName] = { coach: "غير محدد", players: [] };
-      state.teamsInfo[tName].players.push({ name, number: numRaw !== "" ? Math.max(1, Math.min(99, Number(numRaw))) : null });
-      saveState();
-      closeModal("playerModal");
-      renderAll();
-    }
-
-    function removeTeamPlayer(playerIdx) {
-      if (!state.isAdmin) return;
-      const list = state.teamsInfo[state.selectedTeam]?.players;
-      if (!Array.isArray(list)) return;
-      list.splice(playerIdx, 1);
-      saveState();
       renderAll();
     }
 
@@ -1069,15 +984,14 @@
       const addScorerBtn = document.getElementById("addScorerBtn");
       const addPlayerCardBtn = document.getElementById("addPlayerCardBtn");
       const editCoachBtn = document.getElementById("editCoachBtn");
-      const addPlayerBtn = document.getElementById("addPlayerBtn");
       if (state.isAdmin) {
         roleBtn.textContent = "وضع المشرف (خروج)"; roleBtn.classList.add("admin-active");
         addScorerBtn.style.display = "inline-block"; addPlayerCardBtn.style.display = "inline-block";
-        editCoachBtn.style.display = "inline-block"; addPlayerBtn.style.display = "inline-block";
+        editCoachBtn.style.display = "inline-block";
       } else {
         roleBtn.textContent = "وضع المشاهد"; roleBtn.classList.remove("admin-active");
         addScorerBtn.style.display = "none"; addPlayerCardBtn.style.display = "none";
-        editCoachBtn.style.display = "none"; addPlayerBtn.style.display = "none";
+        editCoachBtn.style.display = "none";
       }
       const { list, playedMatchesCount } = computeStandings();
       document.getElementById("playedMatchesCount").textContent = `مباريات ملعوبة: ${playedMatchesCount}`;
@@ -1096,31 +1010,21 @@
           const played = m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "";
           const scoreText = played ? `${m.hScore} - ${m.aScore}` : "لم تُلعب";
           const cardsText = (m.hY || m.aY || m.hR || m.aR) ? `صفراء: ${m.hY || 0} - ${m.aY || 0} | حمراء: ${m.hR || 0} - ${m.aR || 0}` : "بدون بطاقات مسجلة";
-          const hLineupArr = getMatchTeamLineupDisplay(m.home, m.hLineup);
-          const aLineupArr = getMatchTeamLineupDisplay(m.away, m.aLineup);
-          const hCoach = state.teamsInfo[m.home]?.coach && state.teamsInfo[m.home].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.home].coach})` : "";
-          const aCoach = state.teamsInfo[m.away]?.coach && state.teamsInfo[m.away].coach !== "غير محدد" ? ` (المدرب: ${state.teamsInfo[m.away].coach})` : "";
-          const hItemsHtml = hLineupArr.length > 0 ? `<ul class="lineup-list">${hLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
-          const aItemsHtml = aLineupArr.length > 0 ? `<ul class="lineup-list">${aLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>` : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
-          const lineupAction = state.isAdmin ? `<button class="btn-outline" onclick="openLineupModal(${activeRoundIdx}, ${mIdx})">تشكيلة المباراة</button>` : "";
           const adminAction = state.isAdmin ? `<button class="btn-sm" onclick="openMatchModal(${activeRoundIdx}, ${mIdx})">تعديل</button>` : "";
-          return `<div class="match-card"><div class="match-row"><div class="team-home"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.home}')">${m.home}</button></div><div class="score-box">${scoreText}</div><div class="team-away"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.away}')">${m.away}</button></div></div><div class="match-meta"><span>${cardsText}</span><div class="head-actions">${lineupAction}${adminAction}</div></div><div class="lineup-box"><div class="lineup-title"><span>تشكيلة الفريقين قبل المباراة</span><span class="pill-badge">${played ? "انتهت" : "قبل المباراة"}</span></div><div class="lineup-grid"><div class="lineup-col"><strong>${m.home}${hCoach}</strong>${hItemsHtml}</div><div class="lineup-col"><strong>${m.away}${aCoach}</strong>${aItemsHtml}</div></div></div></div>`;
+          return `<div class="match-card"><div class="match-row"><div class="team-home"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.home}')">${m.home}</button></div><div class="score-box">${scoreText}</div><div class="team-away"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.away}')">${m.away}</button></div></div><div class="match-meta"><span>${cardsText}</span><div class="head-actions">${adminAction}</div></div></div>`;
         }).join("");
       const standingsByTeam = {};
       list.forEach((row, index) => { standingsByTeam[row.team] = { ...row, rank: index + 1 }; });
       document.getElementById("teamsCardsGrid").innerHTML = TEAMS.map(tName => {
-        const tInfo = state.teamsInfo[tName] || { coach: "غير محدد", players: [] };
+        const tInfo = state.teamsInfo[tName] || { coach: "غير محدد" };
         const st = standingsByTeam[tName] || { pts: 0, rank: "-" };
         return `<div class="team-card ${state.selectedTeam === tName ? "selected" : ""}" onclick="state.selectedTeam='${tName}';renderAll();"><div class="team-card-name">${tName}</div><div class="team-card-coach">المدرب: ${tInfo.coach}</div><div class="team-card-meta"><span>المركز: #${st.rank}</span><span>${st.pts} نقطة</span></div></div>`;
       }).join("");
       const activeTeamName = TEAMS.includes(state.selectedTeam) ? state.selectedTeam : TEAMS[0];
-      const activeTeamInfo = state.teamsInfo[activeTeamName] || { coach: "غير محدد", players: [] };
+      const activeTeamInfo = state.teamsInfo[activeTeamName] || { coach: "غير محدد" };
       const activeTeamStats = standingsByTeam[activeTeamName] || { played: 0, gd: 0, pts: 0, yellow: 0, red: 0 };
       document.getElementById("selectedTeamTitle").textContent = `فريق ${activeTeamName}`;
-      const playersHtml = activeTeamInfo.players.length === 0
-        ? `<p style="margin:0;color:var(--slate-600);font-size:0.84rem;">لم يتم تسجيل لاعبين لهذا الفريق بعد.</p>`
-        : activeTeamInfo.players.map((p, idx) => `<div class="player-item"><span>${p.name} ${p.number ? `<span class="pill-badge">#${p.number}</span>` : ""}</span>${state.isAdmin ? `<button class="btn-danger-sm" onclick="removeTeamPlayer(${idx})">حذف</button>` : ""}</div>`).join("");
-      document.getElementById("selectedTeamDetails").innerHTML = `<div class="info-box"><strong>المدرب:</strong> ${activeTeamInfo.coach} • <strong>المركز:</strong> #${activeTeamStats.rank} • <strong>النقاط:</strong> ${activeTeamStats.pts} • <strong>الفارق:</strong> ${activeTeamStats.gd}</div><div style="font-weight:800;color:var(--blue-900);margin-bottom:8px;font-size:0.9rem;">قائمة اللاعبين (${activeTeamInfo.players.length})</div>${playersHtml}`;
+      document.getElementById("selectedTeamDetails").innerHTML = `<div class="info-box"><strong>المدرب:</strong> ${activeTeamInfo.coach} • <strong>المركز:</strong> #${activeTeamStats.rank} • <strong>النقاط:</strong> ${activeTeamStats.pts} • <strong>الفارق:</strong> ${activeTeamStats.gd}</div>`;
       const scorersSorted = [...state.scorers].sort((a, b) => (Number(b.goals) || 0) - (Number(a.goals) || 0));
       document.getElementById("scorersList").innerHTML = scorersSorted.length === 0
         ? `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد أهداف مسجلة حتى الآن.</p>`
@@ -1154,3 +1058,4 @@
   </script>
 </body>
 </html>
+
