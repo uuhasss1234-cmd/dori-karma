@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -35,7 +35,7 @@
       background: linear-gradient(180deg, var(--blue-50) 0%, var(--white) 240px);
       color: var(--slate-800);
       min-height: 100vh;
-      padding-bottom: 84px;
+      padding-bottom: 88px;
     }
     .app-header {
       background: linear-gradient(135deg, var(--blue-900), var(--blue-700));
@@ -120,7 +120,7 @@
       border-color: var(--white);
     }
     .container {
-      max-width: 960px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 14px;
     }
@@ -215,6 +215,12 @@
       font-weight: 800;
       color: var(--blue-900);
     }
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
     .table-wrap {
       overflow-x: auto;
       border-radius: 12px;
@@ -247,6 +253,17 @@
     }
     tr:nth-child(even) td { background: var(--blue-50); }
     .pts-cell { color: var(--blue-800); font-weight: 900; }
+    .team-link-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      font-weight: 800;
+      color: var(--blue-800);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
     .round-pills {
       display: flex;
       gap: 6px;
@@ -256,7 +273,7 @@
       scrollbar-width: thin;
     }
     .round-pill {
-      border: 1px solid var(--blue-200, #bfdbfe);
+      border: 1px solid #bfdbfe;
       background: var(--blue-50);
       color: var(--blue-800);
       border-radius: 999px;
@@ -312,25 +329,158 @@
       font-size: 0.76rem;
       color: var(--slate-600);
     }
+    .lineup-box {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--slate-100);
+      background: var(--slate-50);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.76rem;
+    }
+    .lineup-title {
+      font-weight: 800;
+      color: var(--blue-900);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+    .lineup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .lineup-col strong {
+      display: block;
+      color: var(--blue-800);
+      margin-bottom: 4px;
+      font-size: 0.76rem;
+    }
+    .lineup-list {
+      margin: 0;
+      padding: 0 14px 0 0;
+      color: var(--slate-800);
+      line-height: 1.55;
+    }
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 640px) {
+      .teams-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .team-card {
+      border: 1px solid var(--blue-100);
+      background: var(--blue-50);
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.15s ease;
+    }
+    .team-card:active { transform: scale(0.98); }
+    .team-card.selected {
+      background: var(--white);
+      border: 2px solid var(--blue-700);
+      box-shadow: var(--shadow);
+    }
+    .team-card-name {
+      font-size: 0.96rem;
+      font-weight: 900;
+      color: var(--blue-900);
+      margin: 0 0 4px;
+    }
+    .team-card-coach {
+      font-size: 0.76rem;
+      color: var(--slate-600);
+      margin: 0 0 6px;
+    }
+    .team-card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--blue-800);
+    }
+    .info-box {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 0.84rem;
+    }
+    .player-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      background: var(--white);
+      margin-bottom: 7px;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    .check-player-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 6px;
+      border-bottom: 1px solid var(--slate-100);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .card-badge-y {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    .card-badge-r {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
     .btn-sm {
       border: none;
       border-radius: 8px;
-      padding: 5px 10px;
+      padding: 6px 10px;
       font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
       background: var(--blue-700);
       color: var(--white);
+      white-space: nowrap;
     }
     .btn-outline {
       border: 1px solid var(--blue-700);
       border-radius: 8px;
-      padding: 5px 10px;
+      padding: 6px 10px;
       font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
       background: var(--white);
       color: var(--blue-700);
+      white-space: nowrap;
+    }
+    .btn-danger-sm {
+      border: none;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #fee2e2;
+      color: var(--red-600);
     }
     .bottom-nav {
       position: fixed;
@@ -340,15 +490,15 @@
       background: var(--white);
       border-top: 1px solid var(--slate-200);
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       z-index: 30;
       box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.06);
     }
     .nav-item {
       border: none;
       background: transparent;
-      padding: 9px 4px;
-      font-size: 0.74rem;
+      padding: 9px 2px;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--slate-600);
       cursor: pointer;
@@ -372,7 +522,7 @@
       background: var(--white);
       border-radius: 16px;
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       padding: 16px;
       box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
       max-height: 90vh;
@@ -380,17 +530,18 @@
     }
     .form-row { margin-bottom: 10px; }
     .form-row label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; color: var(--slate-800); }
-    .form-row input, .form-row select {
+    .form-row input, .form-row select, .form-row textarea {
       width: 100%;
       padding: 8px 10px;
       border-radius: 10px;
       border: 1px solid var(--slate-200);
       font-size: 0.86rem;
+      font-family: inherit;
     }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .pill-badge {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 9px;
       border-radius: 999px;
       font-size: 0.72rem;
       font-weight: 700;
@@ -422,6 +573,7 @@
   </header>
 
   <main class="container">
+    <!-- الرئيسية -->
     <section id="tab-home" class="tab-panel">
       <div class="hero-card">
         <div class="emblem-wrap">
@@ -446,13 +598,13 @@
             <strong>الجولات (1–13)</strong>
             <span>النتائج والمواجهات</span>
           </div>
-          <div class="quick-tile" onclick="switchTab('stats')">
-            <strong>الأهداف والبطاقات</strong>
-            <span>الهدافون والبطاقات</span>
+          <div class="quick-tile" onclick="switchTab('teams')">
+            <strong>الفرق واللاعبون</strong>
+            <span>المدربون وقوائم الفرق</span>
           </div>
-          <div class="quick-tile" onclick="handleRoleButton()">
-            <strong id="homeAdminLabel">إدارة المشرف</strong>
-            <span id="homeAdminSub">تعديل النتائج والبيانات</span>
+          <div class="quick-tile" onclick="switchTab('stats')">
+            <strong>الإحصائيات</strong>
+            <span>الهدافون والبطاقات</span>
           </div>
         </div>
       </div>
@@ -460,17 +612,24 @@
       <div class="section-card">
         <div class="section-head">
           <h2>ملخص سريع للترتيب (أول 5 فرق)</h2>
-          <button class="btn-outline" onclick="switchTab('standings')">عرض الجدول الكامل</button>
+          <div class="head-actions">
+            <button class="btn-sm" onclick="shareStandings()">مشاركة الترتيب</button>
+            <button class="btn-outline" onclick="switchTab('standings')">الجدول الكامل</button>
+          </div>
         </div>
         <div id="homeTopStandings"></div>
       </div>
     </section>
 
+    <!-- الترتيب -->
     <section id="tab-standings" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
           <h2>جدول ترتيب دوري الكرمة - الدرجة الأولى</h2>
-          <span class="pill-badge" id="playedMatchesCount"></span>
+          <div class="head-actions">
+            <span class="pill-badge" id="playedMatchesCount"></span>
+            <button class="btn-sm" onclick="shareStandings()">مشاركة الترتيب</button>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -496,17 +655,44 @@
       </div>
     </section>
 
+    <!-- الجولات -->
     <section id="tab-rounds" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
           <h2 id="roundHeading">الجولة 1</h2>
-          <span class="pill-badge" id="byeTeamBadge"></span>
+          <div class="head-actions">
+            <span class="pill-badge" id="byeTeamBadge"></span>
+            <button class="btn-sm" onclick="shareCurrentRound()">مشاركة الجولة</button>
+          </div>
         </div>
         <div class="round-pills" id="roundPills"></div>
         <div id="roundMatchesList"></div>
       </div>
     </section>
 
+    <!-- الفرق واللاعبون -->
+    <section id="tab-teams" class="tab-panel" style="display:none;">
+      <div class="section-card">
+        <div class="section-head">
+          <h2>فرق البطولة (13 فريقاً)</h2>
+          <span class="pill-badge">اضغط على فريق لعرض التفاصيل</span>
+        </div>
+        <div id="teamsCardsGrid" class="teams-grid"></div>
+      </div>
+
+      <div class="section-card" id="selectedTeamPanel">
+        <div class="section-head">
+          <h2 id="selectedTeamTitle">تفاصيل الفريق</h2>
+          <div class="head-actions">
+            <button id="editCoachBtn" class="btn-outline" style="display:none;" onclick="openCoachModal()">تعديل المدرب</button>
+            <button id="addPlayerBtn" class="btn-sm" style="display:none;" onclick="openPlayerModal()">+ إضافة لاعب</button>
+          </div>
+        </div>
+        <div id="selectedTeamDetails"></div>
+      </div>
+    </section>
+
+    <!-- الإحصائيات -->
     <section id="tab-stats" class="tab-panel" style="display:none;">
       <div class="section-card">
         <div class="section-head">
@@ -514,6 +700,14 @@
           <button id="addScorerBtn" class="btn-sm" style="display:none;" onclick="openScorerModal()">+ إضافة هدف</button>
         </div>
         <div id="scorersList"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2>البطاقات الصفراء والحمراء حسب اللاعبين</h2>
+          <button id="addPlayerCardBtn" class="btn-sm" style="display:none;" onclick="openPlayerCardModal()">+ تسجيل بطاقة لاعب</button>
+        </div>
+        <div id="playerCardsList"></div>
       </div>
 
       <div class="section-card">
@@ -541,9 +735,11 @@
     <button class="nav-item active" data-tab="home" onclick="switchTab('home')">الرئيسية</button>
     <button class="nav-item" data-tab="standings" onclick="switchTab('standings')">الترتيب</button>
     <button class="nav-item" data-tab="rounds" onclick="switchTab('rounds')">الجولات</button>
+    <button class="nav-item" data-tab="teams" onclick="switchTab('teams')">الفرق</button>
     <button class="nav-item" data-tab="stats" onclick="switchTab('stats')">الإحصائيات</button>
   </nav>
 
+  <!-- نافذة رمز المشرف -->
   <div id="pinModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 style="margin:0 0 10px;color:var(--blue-900);">دخول وضع المشرف</h3>
@@ -561,6 +757,7 @@
     </div>
   </div>
 
+  <!-- نافذة تعديل المباراة -->
   <div id="matchModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 id="matchModalTitle" style="margin:0 0 12px;color:var(--blue-900);">تعديل المباراة</h3>
@@ -603,6 +800,30 @@
     </div>
   </div>
 
+  <!-- نافذة تحديد تشكيلة المباراة قبل اللعب -->
+  <div id="lineupModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3 id="lineupModalTitle" style="margin:0 0 12px;color:var(--blue-900);">تشكيلة المباراة</h3>
+      <form onsubmit="saveLineupEdit(event)">
+        <div class="grid-2">
+          <div class="form-row">
+            <label id="homeLineupLabel">تشكيلة المضيف</label>
+            <div id="homeLineupChecks" style="max-height:200px;overflow-y:auto;border:1px solid var(--slate-200);border-radius:10px;padding:6px;"></div>
+          </div>
+          <div class="form-row">
+            <label id="awayLineupLabel">تشكيلة الضيف</label>
+            <div id="awayLineupChecks" style="max-height:200px;overflow-y:auto;border:1px solid var(--slate-200);border-radius:10px;padding:6px;"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
+          <button type="button" class="btn-outline" onclick="closeModal('lineupModal')">إلغاء</button>
+          <button type="submit" class="btn-sm">حفظ التشكيلة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة إضافة هدف -->
   <div id="scorerModal" class="modal-backdrop">
     <div class="modal-card">
       <h3 style="margin:0 0 12px;color:var(--blue-900);">إضافة هدف للاعب</h3>
@@ -627,10 +848,93 @@
     </div>
   </div>
 
+  <!-- نافذة تعديل المدرب -->
+  <div id="coachModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3 id="coachModalTitle" style="margin:0 0 12px;color:var(--blue-900);">تعديل مدرب الفريق</h3>
+      <form onsubmit="saveCoach(event)">
+        <div class="form-row">
+          <label for="coachNameInput">اسم المدرب</label>
+          <input id="coachNameInput" type="text" placeholder="أدخل اسم المدرب" />
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button type="button" class="btn-outline" onclick="closeModal('coachModal')">إلغاء</button>
+          <button type="submit" class="btn-sm">حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة إضافة لاعب للفريق -->
+  <div id="playerModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3 id="playerModalTitle" style="margin:0 0 12px;color:var(--blue-900);">إضافة لاعب للفريق</h3>
+      <form onsubmit="saveTeamPlayer(event)">
+        <div class="form-row">
+          <label for="playerNameInput">اسم اللاعب</label>
+          <input id="playerNameInput" type="text" required />
+        </div>
+        <div class="form-row">
+          <label for="playerNumberInput">رقم القميص (اختياري)</label>
+          <input id="playerNumberInput" type="number" min="1" max="99" placeholder="مثال: 9" />
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button type="button" class="btn-outline" onclick="closeModal('playerModal')">إلغاء</button>
+          <button type="submit" class="btn-sm">إضافة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة تسجيل بطاقة لاعب -->
+  <div id="playerCardModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3 style="margin:0 0 12px;color:var(--blue-900);">تسجيل بطاقة للاعب</h3>
+      <form onsubmit="savePlayerCard(event)">
+        <div class="form-row">
+          <label for="cardPlayerNameInput">اسم اللاعب</label>
+          <input id="cardPlayerNameInput" type="text" required />
+        </div>
+        <div class="form-row">
+          <label for="cardTeamSelect">الفريق</label>
+          <select id="cardTeamSelect"></select>
+        </div>
+        <div class="grid-2">
+          <div class="form-row">
+            <label for="cardYellowInput">بطاقات صفراء</label>
+            <input id="cardYellowInput" type="number" min="0" max="10" value="1" />
+          </div>
+          <div class="form-row">
+            <label for="cardRedInput">بطاقات حمراء</label>
+            <input id="cardRedInput" type="number" min="0" max="5" value="0" />
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button type="button" class="btn-outline" onclick="closeModal('playerCardModal')">إلغاء</button>
+          <button type="submit" class="btn-sm">حفظ البطاقة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة نص المشاركة -->
+  <div id="shareModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3 id="shareModalTitle" style="margin:0 0 10px;color:var(--blue-900);">مشاركة النص</h3>
+      <div class="form-row">
+        <textarea id="shareTextArea" rows="9" readonly></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn-outline" onclick="closeModal('shareModal')">إغلاق</button>
+        <button type="button" class="btn-sm" onclick="copyShareText()">نسخ النص</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const _K = "HASSAN_\\HASSAN";
-    const STORAGE_KEY = "dori_karma_first_div_state_v2";
-    const FIREBASE_DB_URL = "https://dori-karma-default-rtdb.firebaseio.com/leagueState.json";
+    const STORAGE_KEY = "dori_karma_first_div_state_v4";
+    const FIREBASE_DB_URL = "https://dori-karma-default-rtdb.firebaseio.com/leagueState_v4.json";
 
     const TEAMS = [
       "الأسود",
@@ -711,6 +1015,50 @@
       }
     ];
 
+    function buildDefaultTeamsInfo() {
+      const info = {};
+      for (const name of TEAMS) {
+        info[name] = {
+          coach: "غير محدد",
+          players: []
+        };
+      }
+      return info;
+    }
+
+    function sanitizeTeamsInfo(rawInfo) {
+      const base = buildDefaultTeamsInfo();
+      if (!rawInfo || typeof rawInfo !== "object") return base;
+      for (const name of TEAMS) {
+        const entry = rawInfo[name];
+        if (entry && typeof entry === "object") {
+          base[name].coach = typeof entry.coach === "string" && entry.coach.trim() ? entry.coach.trim() : "غير محدد";
+          base[name].players = Array.isArray(entry.players)
+            ? entry.players
+                .filter(p => p && typeof p.name === "string" && p.name.trim())
+                .map(p => ({
+                  name: p.name.trim(),
+                  number: p.number !== null && p.number !== undefined && p.number !== "" ? Number(p.number) : null
+                }))
+            : [];
+        }
+      }
+      return base;
+    }
+
+    function sanitizePlayerCards(rawCards) {
+      if (!Array.isArray(rawCards)) return [];
+      return rawCards
+        .filter(c => c && typeof c.name === "string" && c.name.trim() && TEAMS.includes(c.team))
+        .map(c => ({
+          name: c.name.trim(),
+          team: c.team,
+          yellow: Math.max(0, Math.floor(Number(c.yellow) || 0)),
+          red: Math.max(0, Math.floor(Number(c.red) || 0))
+        }))
+        .filter(c => c.yellow > 0 || c.red > 0);
+    }
+
     function sanitizeMatch(m) {
       const hs = (m && m.hScore !== null && m.hScore !== undefined && m.hScore !== "" && Number.isFinite(Number(m.hScore)))
         ? Math.max(0, Math.floor(Number(m.hScore)))
@@ -726,7 +1074,9 @@
         hY: Math.max(0, Math.floor(Number(m && m.hY) || 0)),
         aY: Math.max(0, Math.floor(Number(m && m.aY) || 0)),
         hR: Math.max(0, Math.floor(Number(m && m.hR) || 0)),
-        aR: Math.max(0, Math.floor(Number(m && m.aR) || 0))
+        aR: Math.max(0, Math.floor(Number(m && m.aR) || 0)),
+        hLineup: Array.isArray(m && m.hLineup) ? m.hLineup.filter(x => typeof x === "string" && x.trim()) : [],
+        aLineup: Array.isArray(m && m.aLineup) ? m.aLineup.filter(x => typeof x === "string" && x.trim()) : []
       };
     }
 
@@ -747,6 +1097,7 @@
           playedPairs.add(key);
         }
       }
+
       const remainingPairs = [];
       for (let i = 0; i < TEAMS.length; i++) {
         for (let j = i + 1; j < TEAMS.length; j++) {
@@ -763,7 +1114,9 @@
         bye: r.bye,
         matches: r.matches.map(sanitizeMatch)
       }));
-      const pool = [...remainingPairs];
+
+      const usedGlobalPairs = new Set(playedPairs);
+      const pool = remainingPairs.filter(([a, b]) => !usedGlobalPairs.has([a, b].sort().join("||")));
 
       for (let rNum = 6; rNum <= 13; rNum++) {
         const byeTeam = TEAMS[(rNum - 1) % TEAMS.length];
@@ -773,10 +1126,13 @@
 
         for (let k = 0; k < pool.length && roundMatches.length < 6; k++) {
           const [a, b] = pool[k];
+          const pairKey = [a, b].sort().join("||");
           if (a === byeTeam || b === byeTeam) continue;
+          if (usedGlobalPairs.has(pairKey)) continue;
           if (!usedInRound.has(a) && !usedInRound.has(b)) {
             usedInRound.add(a);
             usedInRound.add(b);
+            usedGlobalPairs.add(pairKey);
             roundMatches.push({
               home: a,
               away: b,
@@ -785,7 +1141,9 @@
               hY: 0,
               aY: 0,
               hR: 0,
-              aR: 0
+              aR: 0,
+              hLineup: [],
+              aLineup: []
             });
             pool.splice(k, 1);
             k--;
@@ -793,21 +1151,35 @@
         }
 
         const leftTeams = activeTeams.filter(t => !usedInRound.has(t));
-        for (let i = 0; i + 1 < leftTeams.length && roundMatches.length < 6; i += 2) {
-          roundMatches.push({
-            home: leftTeams[i],
-            away: leftTeams[i + 1],
-            hScore: null,
-            aScore: null,
-            hY: 0,
-            aY: 0,
-            hR: 0,
-            aR: 0
-          });
+        for (let i = 0; i < leftTeams.length && roundMatches.length < 6; i++) {
+          for (let j = i + 1; j < leftTeams.length; j++) {
+            const a = leftTeams[i];
+            const b = leftTeams[j];
+            const pairKey = [a, b].sort().join("||");
+            if (!usedInRound.has(a) && !usedInRound.has(b) && !usedGlobalPairs.has(pairKey)) {
+              usedInRound.add(a);
+              usedInRound.add(b);
+              usedGlobalPairs.add(pairKey);
+              roundMatches.push({
+                home: a,
+                away: b,
+                hScore: null,
+                aScore: null,
+                hY: 0,
+                aY: 0,
+                hR: 0,
+                aR: 0,
+                hLineup: [],
+                aLineup: []
+              });
+              break;
+            }
+          }
         }
 
         rounds.push({ round: rNum, bye: byeTeam, matches: roundMatches });
       }
+
       return rounds;
     }
 
@@ -821,8 +1193,11 @@
             return {
               isAdmin: false,
               selectedRound: 5,
+              selectedTeam: TEAMS[0],
               rounds: cleanRounds,
-              scorers: Array.isArray(parsed.scorers) ? parsed.scorers : []
+              scorers: Array.isArray(parsed.scorers) ? parsed.scorers : [],
+              teamsInfo: sanitizeTeamsInfo(parsed.teamsInfo),
+              playerCards: sanitizePlayerCards(parsed.playerCards)
             };
           }
         }
@@ -830,13 +1205,17 @@
       return {
         isAdmin: false,
         selectedRound: 5,
+        selectedTeam: TEAMS[0],
         rounds: buildRemainingRounds(),
-        scorers: []
+        scorers: [],
+        teamsInfo: buildDefaultTeamsInfo(),
+        playerCards: []
       };
     }
 
     const state = loadState();
     let editingMatchRef = null;
+    let editingLineupRef = null;
 
     function setSyncBadge(text) {
       const el = document.getElementById("syncStatusBadge");
@@ -847,6 +1226,8 @@
       return {
         rounds: state.rounds,
         scorers: state.scorers,
+        teamsInfo: state.teamsInfo,
+        playerCards: state.playerCards,
         updatedAt: Date.now()
       };
     }
@@ -882,10 +1263,14 @@
         if (cleanRounds) {
           state.rounds = cleanRounds;
           state.scorers = Array.isArray(data.scorers) ? data.scorers : [];
+          state.teamsInfo = sanitizeTeamsInfo(data.teamsInfo);
+          state.playerCards = sanitizePlayerCards(data.playerCards);
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
               rounds: state.rounds,
-              scorers: state.scorers
+              scorers: state.scorers,
+              teamsInfo: state.teamsInfo,
+              playerCards: state.playerCards
             }));
           } catch (e) {}
           setSyncBadge("مباشر ✓");
@@ -902,10 +1287,69 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           rounds: state.rounds,
-          scorers: state.scorers
+          scorers: state.scorers,
+          teamsInfo: state.teamsInfo,
+          playerCards: state.playerCards
         }));
       } catch (e) {}
       pushToCloud();
+    }
+
+    function getMatchTeamLineupDisplay(teamName, customLineup) {
+      const roster = state.teamsInfo[teamName]?.players || [];
+      if (Array.isArray(customLineup) && customLineup.length > 0) {
+        return customLineup.map(pName => {
+          const found = roster.find(r => r.name === pName);
+          return found && found.number ? `${found.name} (#${found.number})` : pName;
+        });
+      }
+      return roster.map(p => p.number ? `${p.name} (#${p.number})` : p.name);
+    }
+
+    function openLineupModal(roundIdx, matchIdx) {
+      if (!state.isAdmin) return;
+      editingLineupRef = { roundIdx, matchIdx };
+      const m = state.rounds[roundIdx].matches[matchIdx];
+      document.getElementById("lineupModalTitle").textContent = `تشكيلة قبل المباراة: ${m.home} × ${m.away}`;
+      document.getElementById("homeLineupLabel").textContent = `لاعبو ${m.home}`;
+      document.getElementById("awayLineupLabel").textContent = `لاعبو ${m.away}`;
+
+      const hRoster = state.teamsInfo[m.home]?.players || [];
+      const aRoster = state.teamsInfo[m.away]?.players || [];
+      const hSelected = Array.isArray(m.hLineup) && m.hLineup.length > 0 ? m.hLineup : hRoster.map(p => p.name);
+      const aSelected = Array.isArray(m.aLineup) && m.aLineup.length > 0 ? m.aLineup : aRoster.map(p => p.name);
+
+      document.getElementById("homeLineupChecks").innerHTML = hRoster.length === 0
+        ? `<div style="font-size:0.75rem;color:var(--slate-600);padding:6px;">أضف لاعبين لـ ${m.home} من تبويب الفرق أولاً.</div>`
+        : hRoster.map(p => `
+            <label class="check-player-row">
+              <input type="checkbox" class="home-lineup-cb" value="${p.name}" ${hSelected.includes(p.name) ? "checked" : ""} />
+              <span>${p.name}${p.number ? ` (#${p.number})` : ""}</span>
+            </label>
+          `).join("");
+
+      document.getElementById("awayLineupChecks").innerHTML = aRoster.length === 0
+        ? `<div style="font-size:0.75rem;color:var(--slate-600);padding:6px;">أضف لاعبين لـ ${m.away} من تبويب الفرق أولاً.</div>`
+        : aRoster.map(p => `
+            <label class="check-player-row">
+              <input type="checkbox" class="away-lineup-cb" value="${p.name}" ${aSelected.includes(p.name) ? "checked" : ""} />
+              <span>${p.name}${p.number ? ` (#${p.number})` : ""}</span>
+            </label>
+          `).join("");
+
+      document.getElementById("lineupModal").classList.add("open");
+    }
+
+    function saveLineupEdit(e) {
+      e.preventDefault();
+      if (!state.isAdmin || !editingLineupRef) return;
+      const { roundIdx, matchIdx } = editingLineupRef;
+      const m = state.rounds[roundIdx].matches[matchIdx];
+      m.hLineup = Array.from(document.querySelectorAll(".home-lineup-cb:checked")).map(cb => cb.value);
+      m.aLineup = Array.from(document.querySelectorAll(".away-lineup-cb:checked")).map(cb => cb.value);
+      saveState();
+      closeModal("lineupModal");
+      renderAll();
     }
 
     function computeStandings() {
@@ -1092,24 +1536,182 @@
       renderAll();
     }
 
+    function selectTeamAndOpen(teamName) {
+      state.selectedTeam = teamName;
+      switchTab("teams");
+    }
+
+    function openCoachModal() {
+      if (!state.isAdmin) return;
+      const tName = state.selectedTeam;
+      document.getElementById("coachModalTitle").textContent = `مدرب فريق ${tName}`;
+      const currentCoach = state.teamsInfo[tName]?.coach || "";
+      document.getElementById("coachNameInput").value = currentCoach === "غير محدد" ? "" : currentCoach;
+      document.getElementById("coachModal").classList.add("open");
+    }
+
+    function saveCoach(e) {
+      e.preventDefault();
+      if (!state.isAdmin) return;
+      const tName = state.selectedTeam;
+      const val = document.getElementById("coachNameInput").value.trim();
+      if (!state.teamsInfo[tName]) state.teamsInfo[tName] = { coach: "غير محدد", players: [] };
+      state.teamsInfo[tName].coach = val || "غير محدد";
+      saveState();
+      closeModal("coachModal");
+      renderAll();
+    }
+
+    function openPlayerModal() {
+      if (!state.isAdmin) return;
+      document.getElementById("playerModalTitle").textContent = `إضافة لاعب إلى ${state.selectedTeam}`;
+      document.getElementById("playerNameInput").value = "";
+      document.getElementById("playerNumberInput").value = "";
+      document.getElementById("playerModal").classList.add("open");
+    }
+
+    function saveTeamPlayer(e) {
+      e.preventDefault();
+      if (!state.isAdmin) return;
+      const tName = state.selectedTeam;
+      const name = document.getElementById("playerNameInput").value.trim();
+      const numRaw = document.getElementById("playerNumberInput").value;
+      if (!name) return;
+      if (!state.teamsInfo[tName]) state.teamsInfo[tName] = { coach: "غير محدد", players: [] };
+      state.teamsInfo[tName].players.push({
+        name,
+        number: numRaw !== "" ? Math.max(1, Math.min(99, Number(numRaw))) : null
+      });
+      saveState();
+      closeModal("playerModal");
+      renderAll();
+    }
+
+    function removeTeamPlayer(playerIdx) {
+      if (!state.isAdmin) return;
+      const tName = state.selectedTeam;
+      const list = state.teamsInfo[tName]?.players;
+      if (!Array.isArray(list)) return;
+      list.splice(playerIdx, 1);
+      saveState();
+      renderAll();
+    }
+
+    function openPlayerCardModal() {
+      if (!state.isAdmin) return;
+      const sel = document.getElementById("cardTeamSelect");
+      sel.innerHTML = TEAMS.map(t => `<option value="${t}">${t}</option>`).join("");
+      document.getElementById("cardPlayerNameInput").value = "";
+      document.getElementById("cardYellowInput").value = 1;
+      document.getElementById("cardRedInput").value = 0;
+      document.getElementById("playerCardModal").classList.add("open");
+    }
+
+    function savePlayerCard(e) {
+      e.preventDefault();
+      if (!state.isAdmin) return;
+      const name = document.getElementById("cardPlayerNameInput").value.trim();
+      const team = document.getElementById("cardTeamSelect").value;
+      const yellow = Math.max(0, Math.floor(Number(document.getElementById("cardYellowInput").value) || 0));
+      const red = Math.max(0, Math.floor(Number(document.getElementById("cardRedInput").value) || 0));
+      if (!name || (yellow === 0 && red === 0)) return;
+
+      const existing = state.playerCards.find(c => c.name === name && c.team === team);
+      if (existing) {
+        existing.yellow += yellow;
+        existing.red += red;
+      } else {
+        state.playerCards.push({ name, team, yellow, red });
+      }
+      saveState();
+      closeModal("playerCardModal");
+      renderAll();
+    }
+
+    function removePlayerCard(idx) {
+      if (!state.isAdmin) return;
+      state.playerCards.splice(idx, 1);
+      saveState();
+      renderAll();
+    }
+
+    function openShareModal(title, text) {
+      if (navigator.share) {
+        navigator.share({ title, text }).catch(() => {
+          document.getElementById("shareModalTitle").textContent = title;
+          document.getElementById("shareTextArea").value = text;
+          document.getElementById("shareModal").classList.add("open");
+        });
+      } else {
+        document.getElementById("shareModalTitle").textContent = title;
+        document.getElementById("shareTextArea").value = text;
+        document.getElementById("shareModal").classList.add("open");
+      }
+    }
+
+    function copyShareText() {
+      const ta = document.getElementById("shareTextArea");
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      try {
+        navigator.clipboard?.writeText(ta.value);
+      } catch (e) {}
+      try {
+        document.execCommand("copy");
+      } catch (e) {}
+    }
+
+    function shareStandings() {
+      const { list } = computeStandings();
+      const lines = [
+        "🏆 ترتيب دوري الكرمة - الدرجة الأولى",
+        "اللجنه المركزيه الرياضيه في قضاء كرمة بني سعيد",
+        "--------------------------------"
+      ];
+      list.forEach((r, i) => {
+        const gdStr = r.gd > 0 ? `+${r.gd}` : `${r.gd}`;
+        lines.push(`${i + 1}. ${r.team} | نقاط: ${r.pts} | لعب: ${r.played} | فارق: ${gdStr}`);
+      });
+      openShareModal("مشاركة جدول الترتيب", lines.join("\n"));
+    }
+
+    function shareCurrentRound() {
+      const rIdx = state.rounds.findIndex(r => r.round === state.selectedRound);
+      const currentRound = state.rounds[rIdx >= 0 ? rIdx : 0];
+      const lines = [
+        `⚽ دوري الكرمة - الدرجة الأولى | الجولة ${currentRound.round}`,
+        `راحة: ${currentRound.bye}`,
+        "--------------------------------"
+      ];
+      currentRound.matches.forEach(m => {
+        const played = m.hScore !== null && m.aScore !== null && m.hScore !== "" && m.aScore !== "";
+        const resStr = played ? `(${m.hScore} - ${m.aScore})` : "(لم تُلعب)";
+        lines.push(`• ${m.home} ${resStr} ${m.away}`);
+      });
+      openShareModal(`مشاركة الجولة ${currentRound.round}`, lines.join("\n"));
+    }
+
     function renderAll() {
       const roleBtn = document.getElementById("roleToggleBtn");
-      const homeAdminLabel = document.getElementById("homeAdminLabel");
-      const homeAdminSub = document.getElementById("homeAdminSub");
       const addScorerBtn = document.getElementById("addScorerBtn");
+      const addPlayerCardBtn = document.getElementById("addPlayerCardBtn");
+      const editCoachBtn = document.getElementById("editCoachBtn");
+      const addPlayerBtn = document.getElementById("addPlayerBtn");
 
       if (state.isAdmin) {
         roleBtn.textContent = "وضع المشرف (خروج)";
         roleBtn.classList.add("admin-active");
-        homeAdminLabel.textContent = "وضع المشرف مفعّل";
-        homeAdminSub.textContent = "اضغط على أي مباراة لتعديلها";
         addScorerBtn.style.display = "inline-block";
+        addPlayerCardBtn.style.display = "inline-block";
+        editCoachBtn.style.display = "inline-block";
+        addPlayerBtn.style.display = "inline-block";
       } else {
         roleBtn.textContent = "وضع المشاهد";
         roleBtn.classList.remove("admin-active");
-        homeAdminLabel.textContent = "إدارة المشرف";
-        homeAdminSub.textContent = "تعديل النتائج والبيانات";
         addScorerBtn.style.display = "none";
+        addPlayerCardBtn.style.display = "none";
+        editCoachBtn.style.display = "none";
+        addPlayerBtn.style.display = "none";
       }
 
       const { list, playedMatchesCount } = computeStandings();
@@ -1118,7 +1720,7 @@
       const top5Rows = list.slice(0, 5).map((r, i) => `
         <tr>
           <td>${i + 1}</td>
-          <td class="team-col">${r.team}</td>
+          <td class="team-col"><button class="team-link-btn" onclick="selectTeamAndOpen('${r.team}')">${r.team}</button></td>
           <td>${r.played}</td>
           <td>${r.gd}</td>
           <td class="pts-cell">${r.pts}</td>
@@ -1144,7 +1746,7 @@
       document.getElementById("standingsBody").innerHTML = list.map((r, idx) => `
         <tr>
           <td>${idx + 1}</td>
-          <td class="team-col">${r.team}</td>
+          <td class="team-col"><button class="team-link-btn" onclick="selectTeamAndOpen('${r.team}')">${r.team}</button></td>
           <td>${r.played}</td>
           <td>${r.win}</td>
           <td>${r.draw}</td>
@@ -1167,6 +1769,7 @@
 
       const rIdx = state.rounds.findIndex(r => r.round === state.selectedRound);
       const currentRound = state.rounds[rIdx >= 0 ? rIdx : 0];
+      const activeRoundIdx = rIdx >= 0 ? rIdx : 0;
       document.getElementById("roundHeading").textContent = `الجولة ${currentRound.round}`;
       document.getElementById("byeTeamBadge").textContent = `راحة: ${currentRound.bye}`;
 
@@ -1176,25 +1779,120 @@
         const cardsText = (m.hY || m.aY || m.hR || m.aR)
           ? `صفراء: ${m.hY || 0} - ${m.aY || 0} | حمراء: ${m.hR || 0} - ${m.aR || 0}`
           : "بدون بطاقات مسجلة";
+
+        const hLineupArr = getMatchTeamLineupDisplay(m.home, m.hLineup);
+        const aLineupArr = getMatchTeamLineupDisplay(m.away, m.aLineup);
+        const hCoach = state.teamsInfo[m.home]?.coach && state.teamsInfo[m.home].coach !== "غير محدد"
+          ? ` (المدرب: ${state.teamsInfo[m.home].coach})`
+          : "";
+        const aCoach = state.teamsInfo[m.away]?.coach && state.teamsInfo[m.away].coach !== "غير محدد"
+          ? ` (المدرب: ${state.teamsInfo[m.away].coach})`
+          : "";
+
+        const hItemsHtml = hLineupArr.length > 0
+          ? `<ul class="lineup-list">${hLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>`
+          : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
+        const aItemsHtml = aLineupArr.length > 0
+          ? `<ul class="lineup-list">${aLineupArr.map(item => `<li>${item}</li>`).join("")}</ul>`
+          : `<span style="color:var(--slate-600);">لم يُسجّل لاعبين بعد</span>`;
+
+        const lineupAction = state.isAdmin
+          ? `<button class="btn-outline" onclick="openLineupModal(${activeRoundIdx}, ${mIdx})">تشكيلة المباراة</button>`
+          : "";
         const adminAction = state.isAdmin
-          ? `<button class="btn-sm" onclick="openMatchModal(${rIdx >= 0 ? rIdx : 0}, ${mIdx})">تعديل</button>`
+          ? `<button class="btn-sm" onclick="openMatchModal(${activeRoundIdx}, ${mIdx})">تعديل</button>`
           : "";
 
         return `
           <div class="match-card">
             <div class="match-row">
-              <div class="team-home">${m.home}</div>
+              <div class="team-home"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.home}')">${m.home}</button></div>
               <div class="score-box">${scoreText}</div>
-              <div class="team-away">${m.away}</div>
+              <div class="team-away"><button class="team-link-btn" onclick="selectTeamAndOpen('${m.away}')">${m.away}</button></div>
             </div>
             <div class="match-meta">
               <span>${cardsText}</span>
-              ${adminAction}
+              <div class="head-actions">
+                ${lineupAction}
+                ${adminAction}
+              </div>
+            </div>
+            <div class="lineup-box">
+              <div class="lineup-title">
+                <span>تشكيلة الفريقين قبل المباراة</span>
+                <span class="pill-badge">${played ? "انتهت" : "قبل المباراة"}</span>
+              </div>
+              <div class="lineup-grid">
+                <div class="lineup-col">
+                  <strong>${m.home}${hCoach}</strong>
+                  ${hItemsHtml}
+                </div>
+                <div class="lineup-col">
+                  <strong>${m.away}${aCoach}</strong>
+                  ${aItemsHtml}
+                </div>
+              </div>
             </div>
           </div>
         `;
       }).join("");
 
+      // تبويب الفرق واللاعبون
+      const standingsByTeam = {};
+      list.forEach((row, index) => {
+        standingsByTeam[row.team] = { ...row, rank: index + 1 };
+      });
+
+      document.getElementById("teamsCardsGrid").innerHTML = TEAMS.map(tName => {
+        const tInfo = state.teamsInfo[tName] || { coach: "غير محدد", players: [] };
+        const st = standingsByTeam[tName] || { pts: 0, rank: "-" };
+        const isSel = state.selectedTeam === tName;
+        return `
+          <div class="team-card ${isSel ? "selected" : ""}" onclick="state.selectedTeam='${tName}';renderAll();">
+            <div class="team-card-name">${tName}</div>
+            <div class="team-card-coach">المدرب: ${tInfo.coach}</div>
+            <div class="team-card-meta">
+              <span>المركز: #${st.rank}</span>
+              <span>${st.pts} نقطة</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const activeTeamName = TEAMS.includes(state.selectedTeam) ? state.selectedTeam : TEAMS[0];
+      const activeTeamInfo = state.teamsInfo[activeTeamName] || { coach: "غير محدد", players: [] };
+      const activeTeamStats = standingsByTeam[activeTeamName] || { played: 0, gd: 0, pts: 0, yellow: 0, red: 0 };
+
+      document.getElementById("selectedTeamTitle").textContent = `فريق ${activeTeamName}`;
+      const playersHtml = activeTeamInfo.players.length === 0
+        ? `<p style="margin:0;color:var(--slate-600);font-size:0.84rem;">لم يتم تسجيل لاعبين لهذا الفريق بعد.</p>`
+        : activeTeamInfo.players.map((p, idx) => {
+            const numBadge = p.number ? `<span class="pill-badge">#${p.number}</span>` : "";
+            const delBtn = state.isAdmin
+              ? `<button class="btn-danger-sm" onclick="removeTeamPlayer(${idx})">حذف</button>`
+              : "";
+            return `
+              <div class="player-item">
+                <span>${p.name} ${numBadge}</span>
+                ${delBtn}
+              </div>
+            `;
+          }).join("");
+
+      document.getElementById("selectedTeamDetails").innerHTML = `
+        <div class="info-box">
+          <strong>المدرب:</strong> ${activeTeamInfo.coach} •
+          <strong>المركز:</strong> #${activeTeamStats.rank} •
+          <strong>النقاط:</strong> ${activeTeamStats.pts} •
+          <strong>الفارق:</strong> ${activeTeamStats.gd}
+        </div>
+        <div style="font-weight:800;color:var(--blue-900);margin-bottom:8px;font-size:0.9rem;">
+          قائمة اللاعبين (${activeTeamInfo.players.length})
+        </div>
+        ${playersHtml}
+      `;
+
+      // الهدافون
       const scorersSorted = [...state.scorers].sort((a, b) => (Number(b.goals) || 0) - (Number(a.goals) || 0));
       const scorersEl = document.getElementById("scorersList");
       if (scorersSorted.length === 0) {
@@ -1212,6 +1910,34 @@
           `</tbody></table></div>`;
       }
 
+      // البطاقات حسب اللاعبين
+      const playerCardsEl = document.getElementById("playerCardsList");
+      if (!state.playerCards.length) {
+        playerCardsEl.innerHTML = `<p style="margin:0;color:var(--slate-600);font-size:0.85rem;">لا توجد بطاقات مسجلة للاعبين حتى الآن.</p>`;
+      } else {
+        playerCardsEl.innerHTML = state.playerCards.map((c, idx) => {
+          const yBadge = c.yellow > 0 ? `<span class="card-badge-y">صفراء: ${c.yellow}</span>` : "";
+          const rBadge = c.red > 0 ? `<span class="card-badge-r">حمراء: ${c.red}</span>` : "";
+          const warnText = (c.red > 0 || c.yellow >= 2) ? ` <span class="card-badge-r">تنبيه إيقاف</span>` : "";
+          const delBtn = state.isAdmin ? `<button class="btn-danger-sm" onclick="removePlayerCard(${idx})">حذف</button>` : "";
+          return `
+            <div class="player-item">
+              <div>
+                <span>${c.name}</span>
+                <span style="color:var(--slate-600);font-size:0.78rem;"> (${c.team})</span>
+                ${warnText}
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                ${yBadge}
+                ${rBadge}
+                ${delBtn}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // البطاقات حسب الفرق
       const cardsSorted = [...list].sort((a, b) => (b.red * 3 + b.yellow) - (a.red * 3 + a.yellow));
       document.getElementById("cardsBody").innerHTML = cardsSorted.map((r, i) => `
         <tr>
@@ -1239,3 +1965,4 @@
   </script>
 </body>
 </html>
+ 
