@@ -229,20 +229,28 @@ function saveAll(){
 }
 
 function syncCloud(manual){
-  if(manual)syncTxt.textContent="تحديث...";
-  fetch(DB_URL+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(d=>{
-    if(d&&(manual||(d.updatedAt||0)>=(st.updatedAt||0))){
-      st.rounds=make13Rounds(d.rounds);
-      st.scorers=d.scorers||[];
-      st.coaches={...defaultCoaches(),...(d.coaches||d.teamsInfo||{})};
-      st.cards=d.cards||d.playerCards||[];
-      st.updatedAt=d.updatedAt||Date.now();
-      try{localStorage.setItem(SKEY,JSON.stringify({rounds:st.rounds,scorers:st.scorers,coaches:st.coaches,cards:st.cards,updatedAt:st.updatedAt}));}catch(e){}
-      render();
-    }
-    syncTxt.textContent="مباشر ✓";
-  }).catch(()=>syncTxt.textContent="محلي");
+  const syncTxt=document.getElementById("syncTxt")||document.querySelector("[id*=sync]");
+  if(manual&&syncTxt)syncTxt.textContent="تحديث...";
+  fetch(DB_URL+"?t="+Date.now(),{cache:"no-store"})
+    .then(r=>{if(!r.ok)throw new Error("net");return r.json();})
+    .then(d=>{
+      if(d&&(manual||(d.updatedAt||0)>=(st.updatedAt||0))){
+        if(d.rounds)st.rounds=make13Rounds(d.rounds);
+        if(d.scorers)st.scorers=d.scorers;
+        if(d.coaches)st.coaches={...(typeof defaultCoaches==="function"?defaultCoaches():{}),...d.coaches};
+        const cloudCards=d.cards||d.playerCards;
+        if(Array.isArray(cloudCards)&&(cloudCards.length||!(st.cards&&st.cards.length))){
+          st.cards=cloudCards;
+        }
+        st.updatedAt=d.updatedAt||Date.now();
+        try{localStorage.setItem(SKEY,JSON.stringify(st));}catch(e){}
+        if(typeof render==="function")render();
+      }
+      if(syncTxt)syncTxt.textContent="مباشر ✓";
+    })
+    .catch(()=>{if(syncTxt)syncTxt.textContent="محلي";});
 }
+ 
 
  function calcTable(){
   const m={};TEAMS.forEach(t=>m[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0,y:0,r:0});
