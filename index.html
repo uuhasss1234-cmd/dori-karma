@@ -315,6 +315,18 @@ function saveGoal(){if(!st.isAdmin||!gPlayer.value.trim())return;const f=st.scor
 
 function openCardModal(){if(!st.isAdmin)return;cTeam.innerHTML=TEAMS.map(t=>`<option>${t}</option>`).join("");cPlayer.value="";cY.value=1;cR.value=0;document.getElementById("cardModal").classList.add("open");}
 function saveCard(){if(!st.isAdmin||!cPlayer.value.trim())return;const y=+cY.value||0,r=+cR.value||0;if(!y&&!r)return;const f=st.cards.find(c=>c.name===cPlayer.value.trim()&&c.team===cTeam.value);if(f){f.yellow+=y;f.red+=r}else st.cards.push({name:cPlayer.value.trim(),team:cTeam.value,yellow:y,red:r});saveAll();closeM("cardModal");render();}
+function delGoal(idx){
+  if(!st.isAdmin)return;
+  if(!Array.isArray(st.scorers)||!st.scorers[idx])return;
+  st.scorers.splice(idx,1);
+  saveAll();render();
+}
+function delCard(idx){
+  if(!st.isAdmin)return;
+  if(!Array.isArray(st.cards)||!st.cards[idx])return;
+  st.cards.splice(idx,1);
+  saveAll();render();
+}
 
 function render(){
   roleBtn.textContent=st.isAdmin?"مشرف (خروج)":"وضع المشاهد";
@@ -356,7 +368,7 @@ function render(){
   const cTeams=Object.keys(byTeamC);
   cardsBox.innerHTML=!cTeams.length?`<div class="sub">لا توجد بطاقات مسجلة.</div>`:cTeams.map(tm=>{
     const list=[...byTeamC[tm]];
-    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — صفراء: ${x.y||0} | حمراء: ${x.r||0}</span>${st.isAdmin?`<button class="btn" onclick="delCard(${x.idx})">حذف</button>`:""}</div>`).join("")}</div>`;
+    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — صفراء: ${x.yellow||0} | حمراء: ${x.red||0}</span>${st.isAdmin?`<button class="btn" onclick="delCard(${x.idx})">حذف</button>`:""}</div>`).join("")}</div>`;
   }).join("");
  }
 
