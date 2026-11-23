@@ -158,15 +158,18 @@
   </div>
 </div>
 
-<div id="cardModal" class="modal">
+ <div id="cardModal" class="modal">
   <div class="m-card">
     <h3 style="margin:0 0 8px">تسجيل بطاقة</h3>
-    <input id="cPlayer" type="text" placeholder="اسم اللاعب" />
+    <input id="cPlayer" type="text" placeholder="اسم اللاعب (اكتب موقوف أو مهدد إذا أردت)" />
     <select id="cTeam"></select>
-    <div style="display:flex;gap:6px"><input id="cY" type="number" min="0" value="1" placeholder="صفراء" /><input id="cR" type="number" min="0" value="0" placeholder="حمراء" /></div>
-    <div style="display:flex;gap:6px;justify-content:flex-end">
-      <button class="btn" onclick="closeM('cardModal')">إلغاء</button>
-      <button class="btn" onclick="saveCard()">حفظ</button>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <input id="cYellow" type="number" min="0" value="0" placeholder="صفراء" />
+      <input id="cRed" type="number" min="0" value="0" placeholder="حمراء" />
+    </div>
+    <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:10px">
+      <button type="button" class="btn" onclick="closeM('cardModal')">إلغاء</button>
+      <button type="button" class="btn" onclick="saveCard()">حفظ</button>
     </div>
   </div>
 </div>
