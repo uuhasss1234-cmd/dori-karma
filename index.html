@@ -161,7 +161,8 @@
  <div id="cardModal" class="modal">
   <div class="m-card">
     <h3 style="margin:0 0 8px">تسجيل بطاقة</h3>
-    <input id="cPlayer" type="text" placeholder="اسم اللاعب (اكتب موقوف أو مهدد إذا أردت)" />
+     <input id="cPlayer" type="text" placeholder="اسم اللاعب" />
+
     <select id="cTeam"></select>
     <div style="display:flex;gap:6px;margin-top:6px">
       <input id="cYellow" type="number" min="0" value="0" placeholder="صفراء" />
@@ -375,17 +376,15 @@ function render(){
         byTeamC[tm][nm].yellow+=(+x.yellow||0);
         byTeamC[tm][nm].red+=(+x.red||0);
       });
-      const cTeams=Object.keys(byTeamC);
+             const cTeams=Object.keys(byTeamC);
       cardsBox.innerHTML=!cTeams.length?`<div class="sub">لا توجد بطاقات مسجلة</div>`:cTeams.map(tm=>{
         const list=Object.entries(byTeamC[tm]).map(([nm,v])=>{
-          const hasSusp=/موقوف/.test(nm);
-          const hasWarn=!hasSusp&&/مهدد/.test(nm);
-          const badge=hasSusp?`<span style="background:#fee2e2;color:#b91c1c;padding:2px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">موقوف</span>`:(hasWarn?`<span style="background:#ffedd5;color:#c2410c;padding:2px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">مهدد</span>`:"");
           const delBtn=st.isAdmin?`<button type="button" class="btn" onclick="delCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}')">حذف</button>`:"";
-          return `<div class="row-flex" style="padding:4px 0"><div>${nm}${badge} — صفراء: ${v.yellow} | حمراء: ${v.red}</div>${delBtn}</div>`;
+          return `<div class="row-flex" style="padding:4px 0"><div>${nm} — صفراء: ${v.yellow} | حمراء: ${v.red}</div>${delBtn}</div>`;
         }).join("");
         return `<div class="match" style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:6px">${tm}</div>${list}</div>`;
       }).join("");
+
 
  
 
