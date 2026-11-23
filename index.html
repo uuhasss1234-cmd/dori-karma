@@ -316,9 +316,9 @@ function saveCoach(){if(!st.isAdmin)return;st.coaches[st.team]={coach:coachInp.v
 function openGoalModal(){if(!st.isAdmin)return;gTeam.innerHTML=TEAMS.map(t=>`<option>${t}</option>`).join("");gPlayer.value="";gCount.value=1;document.getElementById("goalModal").classList.add("open");}
 function saveGoal(){if(!st.isAdmin||!gPlayer.value.trim())return;const f=st.scorers.find(s=>s.name===gPlayer.value.trim()&&s.team===gTeam.value);if(f)f.goals+=+gCount.value||1;else st.scorers.push({name:gPlayer.value.trim(),team:gTeam.value,goals:+gCount.value||1});saveAll();closeM("goalModal");render();}
 
-function openCardModal(){if(!st.isAdmin)return;cTeam.innerHTML=TEAMS.map(t=>`<option>${t}</option>`).join("");cPlayer.value="";cY.value=1;cR.value=0;document.getElementById("cardModal").classList.add("open");}
-function saveCard(){if(!st.isAdmin)return;const nm=(cPlayer.value||"").trim();if(!nm)return;const y=Number(cYellow.value)||0,r=Number(cRed.value)||0;st.cards=st.cards||[];st.cards.push({name:nm,team:cTeam.value,yellow:y,red:r});saveAll();closeM("cardModal");render();}
-
+function openCardModal(){if(!st.isAdmin)return;const tEl=document.getElementById("cTeam"),pEl=document.getElementById("cPlayer"),yEl=document.getElementById("cYellow"),rEl=document.getElementById("cRed"),mEl=document.getElementById("cardModal");if(tEl){tEl.innerHTML=TEAMS.map(t=>'<option value="'+t+'">'+t+'</option>').join("");if(st.team&&TEAMS.includes(st.team))tEl.value=st.team;}if(pEl)pEl.value="";if(yEl)yEl.value="0";if(rEl)rEl.value="0";if(mEl)mEl.classList.add("open");}
+function saveCard(){if(!st.isAdmin)return;const pEl=document.getElementById("cPlayer"),tEl=document.getElementById("cTeam"),yEl=document.getElementById("cYellow"),rEl=document.getElementById("cRed"),mEl=document.getElementById("cardModal");const nm=(pEl&&pEl.value||"").trim();if(!nm)return;const y=Number(yEl&&yEl.value)||0,r=Number(rEl&&rEl.value)||0;st.cards=st.cards||[];st.cards.push({name:nm,team:tEl?tEl.value:"",yellow:y,red:r});saveAll();if(mEl)mEl.classList.remove("open");render();}
+ 
 
 
 function delGoal(tm,nm){
