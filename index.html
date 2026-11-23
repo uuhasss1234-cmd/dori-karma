@@ -390,15 +390,18 @@ function render(){
     return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — أهداف: <strong>${x.goals}</strong></span>${st.isAdmin?`<button class="btn" onclick='delGoal(${JSON.stringify(tm)},${JSON.stringify(x.name)})'>حذف</button>`:""}</div>`).join("")}</div>`;
   }).join("");
 
-         const byTeamC={};
-      (st.cards||[]).forEach(x=>{
-        const tm=x.team||"غير محدد",nm=(x.name||"").trim();
-        if(!nm)return;
-        byTeamC[tm]=byTeamC[tm]||{};
-        if(!byTeamC[tm][nm])byTeamC[tm][nm]={yellow:0,red:0};
-        byTeamC[tm][nm].yellow+=(+x.yellow||0);
-        byTeamC[tm][nm].red+=(+x.red||0);
-      });
+          const byTeamC={};
+const _cardsList=Array.isArray(st.cards)?st.cards:Object.values(st.cards||{});
+_cardsList.forEach(x=>{
+  if(!x||typeof x!=="object")return;
+  const tm=x.team||"غير محدد",nm=(x.name||"").trim();
+  if(!nm)return;
+  byTeamC[tm]=byTeamC[tm]||{};
+  if(!byTeamC[tm][nm])byTeamC[tm][nm]={yellow:0,red:0};
+  byTeamC[tm][nm].yellow+=(+x.yellow||0);
+  byTeamC[tm][nm].red+=(+x.red||0);
+});
+
                     const cTeams=Object.keys(byTeamC);
       cardsBox.innerHTML=!cTeams.length?`<div class="sub">لا توجد بطاقات مسجلة</div>`:cTeams.map(tm=>{
         const list=Object.entries(byTeamC[tm]).map(([nm,v])=>{
