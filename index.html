@@ -314,8 +314,8 @@ function openGoalModal(){if(!st.isAdmin)return;gTeam.innerHTML=TEAMS.map(t=>`<op
 function saveGoal(){if(!st.isAdmin||!gPlayer.value.trim())return;const f=st.scorers.find(s=>s.name===gPlayer.value.trim()&&s.team===gTeam.value);if(f)f.goals+=+gCount.value||1;else st.scorers.push({name:gPlayer.value.trim(),team:gTeam.value,goals:+gCount.value||1});saveAll();closeM("goalModal");render();}
 
 function openCardModal(){if(!st.isAdmin)return;cTeam.innerHTML=TEAMS.map(t=>`<option>${t}</option>`).join("");cPlayer.value="";cY.value=1;cR.value=0;document.getElementById("cardModal").classList.add("open");}
-function saveCard(){if(!st.isAdmin||!cPlayer.value.trim())return;const y=+cY.value||0,r=+cR.value||0;if(!y&&!r)return;const f=st.cards.find(c=>c.name===cPlayer.value.trim()&&c.team===cTeam.value);if(f){f.yellow+=y;f.red+=r}else st.cards.push({name:cPlayer.value.trim(),team:cTeam.value,yellow:y,red:r});saveAll();closeM("cardModal");render();}
-function saveCard(){if(!st.isAdmin||!cPlayer.value.trim())return;const y=+cYellow.value||0,r=+cRed.value||0;if(!y&&!r)return;st.cards=st.cards||[];st.cards.push({name:cPlayer.value.trim(),team:cTeam.value,yellow:y,red:r});saveAll();closeM("cardModal");render();}
+ function saveCard(){if(!st.isAdmin||!cPlayer.value.trim())return;const cy=+cYellow.value||0,cr=+cRed.value||0;if(!cy&&!cr)return;st.cards=st.cards||[];st.cards.push({name:cPlayer.value.trim(),team:cTeam.value,yellow:cy,red:cr});saveAll();closeM("cardModal");render();}
+
 function delGoal(tm,nm){
   if(!st.isAdmin||!Array.isArray(st.scorers))return;
   st.scorers=st.scorers.filter(x=>!((x.team||"غير محدد")===tm&&(x.name||"").trim()===nm));
