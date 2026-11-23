@@ -361,7 +361,7 @@ function render(){
     return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — أهداف: <strong>${x.goals}</strong></span>${st.isAdmin?`<button class="btn" onclick='delGoal(${JSON.stringify(tm)},${JSON.stringify(x.name)})'>حذف</button>`:""}</div>`).join("")}</div>`;
   }).join("");
 
-  const byTeamC={};
+    const byTeamC={};
   (st.cards||[]).forEach(x=>{
     const tm=x.team||"غير محدد",nm=(x.name||"").trim();
     if(!nm)return;
@@ -374,12 +374,13 @@ function render(){
   cardsBox.innerHTML=!cTeams.length?`<div class="sub">لا توجد بطاقات مسجلة.</div>`:cTeams.map(tm=>{
     const list=Object.entries(byTeamC[tm]).map(([name,v])=>({name,yellow:v.yellow,red:v.red}));
     return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>{
-      const susp=x.red>=1||x.yellow>=4;
-      const warn=!susp&&x.yellow===3;
-      const badge=susp?`<span style="background:#dc2626;color:#fff;padding:1px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">موقوف</span>`:warn?`<span style="background:#f59e0b;color:#fff;padding:1px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">مهدد</span>`:"";
+      const hasSusp=/موقوف/.test(x.name);
+      const hasWarn=!hasSusp&&/مهدد/.test(x.name);
+      const badge=hasSusp?`<span style="background:#dc2626;color:#fff;padding:1px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">موقوف</span>`:hasWarn?`<span style="background:#f59e0b;color:#fff;padding:1px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">مهدد</span>`:"";
       return `<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — صفراء: ${x.yellow} | حمراء: ${x.red}${badge}</span>${st.isAdmin?`<button class="btn" onclick='delCard(${JSON.stringify(tm)},${JSON.stringify(x.name)})'>حذف</button>`:""}</div>`;
     }).join("")}</div>`;
   }).join("");
+ 
 
  }
 
