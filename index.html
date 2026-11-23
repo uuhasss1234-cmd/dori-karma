@@ -159,7 +159,7 @@
 </div>
 
  <div id="cardModal" class="modal">
-  <div class="m-card">
+  <div class="m-card"> 
     <h3 style="margin:0 0 8px">تسجيل بطاقة</h3>
      <input id="cPlayer" type="text" placeholder="اسم اللاعب" />
 
@@ -174,6 +174,7 @@
     </div>
   </div>
 </div>
+<div id="roundModal" class="modal"><div class="m-card"><h3 style="margin:0 0 8px">ضبط الجولة</h3><select id="rRoundSel" onchange="renderRoundFields()" style="margin-bottom:8px"></select><div style="margin-bottom:8px"><label class="sub">فريق الراحة</label><select id="rByeSel"></select></div><div id="rMatchesBox" style="margin-bottom:8px"></div><div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="btn" onclick="saveRoundModal()">حفظ</button><button type="button" class="btn" onclick="closeM('roundModal')">إلغاء</button></div></div></div>
 
 <script>
 const PIN = "HASSAN_\\HASSAN";
@@ -334,7 +335,10 @@ function delCard(tm,nm){
   st.cards=st.cards.filter(x=>!((x.team||"غير محدد")===tm&&(x.name||"").trim()===nm));
   saveAll();render();
 }
- 
+ function openRoundModal(){if(!st.isAdmin)return;const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox"),mEl=document.getElementById("roundModal");if(!rEl||!bEl||!box||!mEl)return;rEl.innerHTML=(st.rounds||[]).map(x=>'<option value="'+x.round+'">الجولة '+x.round+'</option>').join("");const curR=Number(window._curRound)||5;rEl.value=st.rounds.some(x=>x.round===curR)?String(curR):"1";renderRoundFields();mEl.classList.add("open");}
+function renderRoundFields(){const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox");if(!rEl||!bEl||!box)return;const rnd=st.rounds.find(x=>x.round===Number(rEl.value))||st.rounds[0];if(!rnd)return;bEl.innerHTML='<option value="">بدون راحة</option>'+TEAMS.map(t=>'<option value="'+t+'">'+t+'</option>').join("");bEl.value=rnd.bye||"";const ms=Array.isArray(rnd.matches)?rnd.matches:[];box.innerHTML=Array.from({length:6},(_,i)=>{const m=ms[i]||{home:"",away:"",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0};const opts=(sel)=>'<option value="">— اختر فريق —</option>'+TEAMS.map(t=>'<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>').join("");return '<div style="display:flex;gap:6px;margin-bottom:6px"><select data-h="'+i+'" style="flex:1">'+opts(m.home||"")+'</select><select data-a="'+i+'" style="flex:1">'+opts(m.away||"")+'</select></div>';}).join("");}
+function saveRoundModal(){if(!st.isAdmin)return;const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox"),mEl=document.getElementById("roundModal");if(!rEl||!bEl||!box)return;const rnd=st.rounds.find(x=>x.round===Number(rEl.value));if(!rnd)return;rnd.bye=bEl.value||"";const oldMs=Array.isArray(rnd.matches)?rnd.matches:[];const newMs=[];for(let i=0;i<6;i++){const hEl=box.querySelector('[data-h="'+i+'"]'),aEl=box.querySelector('[data-a="'+i+'"]');const h=hEl?hEl.value:"",a=aEl?aEl.value:"";if(h&&a){const prev=oldMs[i]||{};newMs.push({home:h,away:a,hScore:prev.hScore??null,aScore:prev.aScore??null,hY:prev.hY||0,aY:prev.aY||0,hR:prev.hR||0,aR:prev.aR||0});}}rnd.matches=newMs;saveAll();if(mEl)mEl.classList.remove("open");render();}
+
 function render(){
   roleBtn.textContent=st.isAdmin?"مشرف (خروج)":"وضع المشاهد";
   coachEditBtn.style.display=addGoalBtn.style.display=addCardBtn.style.display=st.isAdmin?"inline-block":"none";
@@ -344,6 +348,8 @@ function render(){
   roundPills.innerHTML=st.rounds.map(r=>`<button class="pill ${r.round===st.round?"active":""}" onclick="st.round=${r.round};render()">الجولة ${r.round}</button>`).join("");
   const ri=Math.max(0,st.rounds.findIndex(r=>r.round===st.round));
   const cur=st.rounds[ri];
+  const _rBtn=document.getElementById("roundEditBtn")||(()=>{const b=document.createElement("button");b.id="roundEditBtn";b.type="button";b.className="btn";b.textContent="ضبط الجولة";b.style.marginBottom="8px";b.onclick=openRoundModal;roundTitle.parentNode.insertBefore(b,roundTitle.nextSibling);return b;})();_rBtn.style.display=st.isAdmin?"inline-block":"none";
+
   roundTitle.textContent=`الجولة ${cur.round}`;byeTxt.textContent=`راحة: ${cur.bye}`;
     matchesBox.innerHTML=!cur.matches.length?`<div class="sub">لا توجد مواجهات مسجلة في هذه الجولة حالياً.</div>`:cur.matches.map((m,mi)=>{
     const hs=m.hScore??m.homeScore??m.h??"";
