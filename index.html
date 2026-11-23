@@ -82,14 +82,17 @@
     <button id="coachEditBtn" class="btn" style="display:none" onclick="openCoachModal()">تعديل المدرب</button>
   </section>
 
-  <section id="sec-stats" class="card" style="display:none">
+<section id="sec-scorers" class="card" style="display:none">
     <div class="row-flex">
-      <h2 style="margin:0;font-size:1rem">الهدافون</h2>
+      <h2 style="margin:0;font-size:1rem">الهدافون حسب الفرق</h2>
       <button id="addGoalBtn" class="btn" style="display:none" onclick="openGoalModal()">+ هدف</button>
     </div>
-    <div id="scorersBox" style="margin-bottom:14px"></div>
+    <div id="scorersBox"></div>
+  </section>
+
+  <section id="sec-cards" class="card" style="display:none">
     <div class="row-flex">
-      <h2 style="margin:0;font-size:1rem">البطاقات</h2>
+      <h2 style="margin:0;font-size:1rem">البطاقات حسب الفرق</h2>
       <button id="addCardBtn" class="btn" style="display:none" onclick="openCardModal()">+ بطاقة</button>
     </div>
     <div id="cardsBox"></div>
@@ -100,7 +103,8 @@
   <button class="active" data-s="standings" onclick="showSec('standings')">الترتيب</button>
   <button data-s="rounds" onclick="showSec('rounds')">الجولات</button>
   <button data-s="teams" onclick="showSec('teams')">الفرق</button>
-  <button data-s="stats" onclick="showSec('stats')">الإحصائيات</button>
+  <button data-s="scorers" onclick="showSec('scorers')">الهدافون</button>
+  <button data-s="cards" onclick="showSec('cards')">البطاقات</button>
 </nav>
 
 <div id="pinModal" class="modal">
@@ -272,12 +276,16 @@ function syncCloud(manual){
   return {arr,played};
 }
 
-function showSec(s){
+ function showSec(s){
   st.sec=s;
-  ["standings","rounds","teams","stats"].forEach(id=>document.getElementById("sec-"+id).style.display=id===s?"block":"none");
+  ["standings","rounds","teams","scorers","cards"].forEach(id=>{
+    const el=document.getElementById("sec-"+id);
+    if(el)el.style.display=id===s?"block":"none";
+  });
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.s===s));
   render();
 }
+
 
 function toggleRole(){
   if(st.isAdmin){st.isAdmin=false;render();}
@@ -329,10 +337,28 @@ function render(){
   teamsGrid.innerHTML=TEAMS.map(t=>`<div class="t-box ${st.team===t?"sel":""}" onclick="st.team='${t}';render()"><strong>${t}</strong><div class="sub">المدرب: ${st.coaches[t]?.coach||"غير محدد"}</div><div class="sub">المركز: #${rankMap[t]?.rk||"-"} • ${rankMap[t]?.pts||0} نقطة</div></div>`).join("");
   const ti=rankMap[st.team]||{rk:"-",pts:0,gd:0};
   teamInfoBox.innerHTML=`<strong>${st.team}</strong> — المدرب: ${st.coaches[st.team]?.coach||"غير محدد"} — المركز: #${ti.rk} — النقاط: ${ti.pts} — الفارق: ${ti.gd}`;
-     const sc=[...st.scorers].sort((a,b)=>(b.goals||0)-(a.goals||0));
-  scorersBox.innerHTML=!sc.length?`<div class="sub">لا توجد أهداف مسجلة.</div>`:sc.map(s=>{const idx=st.scorers.indexOf(s);return `<div class="match" style="display:flex;justify-content:space-between;align-items:center"><div><strong>${s.name}</strong> (${s.team}) — <span class="pts">${s.goals}</span></div>${st.isAdmin?`<button class="btn" style="background:#dc2626" onclick="st.scorers.splice(${idx},1);saveAll();render()">حذف</button>`:""}</div>`}).join("");
-  cardsBox.innerHTML=!st.cards.length?`<div class="sub">لا توجد بطاقات مسجلة.</div>`:st.cards.map((c,i)=>`<div class="match" style="display:flex;justify-content:space-between;align-items:center"><div><strong>${c.name}</strong> (${c.team}) — صفراء: ${c.yellow} | حمراء: ${c.red}</div>${st.isAdmin?`<button class="btn" style="background:#dc2626" onclick="st.cards.splice(${i},1);saveAll();render()">حذف</button>`:""}</div>`).join("");
-}
+      const byTeamG={};
+  (st.scorers||[]).forEach((x,idx)=>{
+    const tm=x.team||"غير محدد";
+    (byTeamG[tm]=byTeamG[tm]||[]).push({...x,idx});
+  });
+  const gTeams=Object.keys(byTeamG);
+  scorersBox.innerHTML=!gTeams.length?`<div class="sub">لا توجد أهداف مسجلة.</div>`:gTeams.map(tm=>{
+    const list=[...byTeamG[tm]].sort((a,b)=>(b.goals||0)-(a.goals||0));
+    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — أهداف: <strong>${x.goals||0}</strong></span>${st.isAdmin?`<button class="btn" onclick="delGoal(${x.idx})">حذف</button>`:""}</div>`).join("")}</div>`;
+  }).join("");
+
+  const byTeamC={};
+  (st.cards||[]).forEach((x,idx)=>{
+    const tm=x.team||"غير محدد";
+    (byTeamC[tm]=byTeamC[tm]||[]).push({...x,idx});
+  });
+  const cTeams=Object.keys(byTeamC);
+  cardsBox.innerHTML=!cTeams.length?`<div class="sub">لا توجد بطاقات مسجلة.</div>`:cTeams.map(tm=>{
+    const list=[...byTeamC[tm]];
+    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — صفراء: ${x.y||0} | حمراء: ${x.r||0}</span>${st.isAdmin?`<button class="btn" onclick="delCard(${x.idx})">حذف</button>`:""}</div>`).join("")}</div>`;
+  }).join("");
+ }
 
 
 render();
