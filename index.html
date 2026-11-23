@@ -318,10 +318,13 @@ function render(){
   const ri=Math.max(0,st.rounds.findIndex(r=>r.round===st.round));
   const cur=st.rounds[ri];
   roundTitle.textContent=`الجولة ${cur.round}`;byeTxt.textContent=`راحة: ${cur.bye}`;
-  matchesBox.innerHTML=!cur.matches.length?`<div class="sub">لا توجد مواجهات مسجلة في هذه الجولة حالياً.</div>`:cur.matches.map((m,mi)=>{
-    const done=m.hScore!==null&&m.aScore!==null&&m.hScore!==""&&m.aScore!=="";
-    return `<div class="match"><div class="m-grid"><div>${m.home}</div><div class="score">${done?`${m.hScore} - ${m.aScore}`:"لم تُلعب"}</div><div style="text-align:left">${m.away}</div></div><div class="row-flex" style="margin:6px 0 0"><span class="sub">صفراء: ${m.hY||0}-${m.aY||0} | حمراء: ${m.hR||0}-${m.aR||0}</span>${st.isAdmin?`<button class="btn" onclick="openMatch(${ri},${mi})">تعديل</button>`:""}</div></div>`;
+    matchesBox.innerHTML=!cur.matches.length?`<div class="sub">لا توجد مواجهات مسجلة في هذه الجولة حالياً.</div>`:cur.matches.map((m,mi)=>{
+    const hs=m.hScore??m.homeScore??m.h??"";
+    const as=m.aScore??m.awayScore??m.a??"";
+    const done=hs!==""&&as!==""&&hs!==null&&as!==null&&hs!==undefined&&as!==undefined&&Number.isFinite(+hs)&&Number.isFinite(+as);
+    return `<div class="match"><div class="m-grid"><div>${m.home}</div><div class="score">${done?`${+hs} - ${+as}`:"لم تُلعب"}</div><div style="text-align:left">${m.away}</div></div><div class="row-flex" style="margin:6px 0 0"><span class="sub">صفراء: ${m.hY||0}-${m.aY||0} | حمراء: ${m.hR||0}-${m.aR||0}</span>${st.isAdmin?`<button class="btn" onclick="openMatch(${ri},${mi})">تعديل</button>`:""}</div></div>`;
   }).join("");
+
   const rankMap={};arr.forEach((r,i)=>rankMap[r.team]={...r,rk:i+1});
   teamsGrid.innerHTML=TEAMS.map(t=>`<div class="t-box ${st.team===t?"sel":""}" onclick="st.team='${t}';render()"><strong>${t}</strong><div class="sub">المدرب: ${st.coaches[t]?.coach||"غير محدد"}</div><div class="sub">المركز: #${rankMap[t]?.rk||"-"} • ${rankMap[t]?.pts||0} نقطة</div></div>`).join("");
   const ti=rankMap[st.team]||{rk:"-",pts:0,gd:0};
