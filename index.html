@@ -315,19 +315,18 @@ function saveGoal(){if(!st.isAdmin||!gPlayer.value.trim())return;const f=st.scor
 
 function openCardModal(){if(!st.isAdmin)return;cTeam.innerHTML=TEAMS.map(t=>`<option>${t}</option>`).join("");cPlayer.value="";cY.value=1;cR.value=0;document.getElementById("cardModal").classList.add("open");}
 function saveCard(){if(!st.isAdmin||!cPlayer.value.trim())return;const y=+cY.value||0,r=+cR.value||0;if(!y&&!r)return;const f=st.cards.find(c=>c.name===cPlayer.value.trim()&&c.team===cTeam.value);if(f){f.yellow+=y;f.red+=r}else st.cards.push({name:cPlayer.value.trim(),team:cTeam.value,yellow:y,red:r});saveAll();closeM("cardModal");render();}
-function delGoal(idx){
-  if(!st.isAdmin)return;
-  if(!Array.isArray(st.scorers)||!st.scorers[idx])return;
-  st.scorers.splice(idx,1);
+function saveCard(){if(!st.isAdmin||!cPlayer.value.trim())return;const y=+cYellow.value||0,r=+cRed.value||0;if(!y&&!r)return;st.cards=st.cards||[];st.cards.push({name:cPlayer.value.trim(),team:cTeam.value,yellow:y,red:r});saveAll();closeM("cardModal");render();}
+function delGoal(tm,nm){
+  if(!st.isAdmin||!Array.isArray(st.scorers))return;
+  st.scorers=st.scorers.filter(x=>!((x.team||"غير محدد")===tm&&(x.name||"").trim()===nm));
   saveAll();render();
 }
-function delCard(idx){
-  if(!st.isAdmin)return;
-  if(!Array.isArray(st.cards)||!st.cards[idx])return;
-  st.cards.splice(idx,1);
+function delCard(tm,nm){
+  if(!st.isAdmin||!Array.isArray(st.cards))return;
+  st.cards=st.cards.filter(x=>!((x.team||"غير محدد")===tm&&(x.name||"").trim()===nm));
   saveAll();render();
 }
-
+ 
 function render(){
   roleBtn.textContent=st.isAdmin?"مشرف (خروج)":"وضع المشاهد";
   coachEditBtn.style.display=addGoalBtn.style.display=addCardBtn.style.display=st.isAdmin?"inline-block":"none";
@@ -349,27 +348,39 @@ function render(){
   teamsGrid.innerHTML=TEAMS.map(t=>`<div class="t-box ${st.team===t?"sel":""}" onclick="st.team='${t}';render()"><strong>${t}</strong><div class="sub">المدرب: ${st.coaches[t]?.coach||"غير محدد"}</div><div class="sub">المركز: #${rankMap[t]?.rk||"-"} • ${rankMap[t]?.pts||0} نقطة</div></div>`).join("");
   const ti=rankMap[st.team]||{rk:"-",pts:0,gd:0};
   teamInfoBox.innerHTML=`<strong>${st.team}</strong> — المدرب: ${st.coaches[st.team]?.coach||"غير محدد"} — المركز: #${ti.rk} — النقاط: ${ti.pts} — الفارق: ${ti.gd}`;
-      const byTeamG={};
-  (st.scorers||[]).forEach((x,idx)=>{
-    const tm=x.team||"غير محدد";
-    (byTeamG[tm]=byTeamG[tm]||[]).push({...x,idx});
+         const byTeamG={};
+  (st.scorers||[]).forEach(x=>{
+    const tm=x.team||"غير محدد",nm=(x.name||"").trim();
+    if(!nm)return;
+    byTeamG[tm]=byTeamG[tm]||{};
+    byTeamG[tm][nm]=(byTeamG[tm][nm]||0)+(+x.goals||0);
   });
   const gTeams=Object.keys(byTeamG);
   scorersBox.innerHTML=!gTeams.length?`<div class="sub">لا توجد أهداف مسجلة.</div>`:gTeams.map(tm=>{
-    const list=[...byTeamG[tm]].sort((a,b)=>(b.goals||0)-(a.goals||0));
-    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — أهداف: <strong>${x.goals||0}</strong></span>${st.isAdmin?`<button class="btn" onclick="delGoal(${x.idx})">حذف</button>`:""}</div>`).join("")}</div>`;
+    const list=Object.entries(byTeamG[tm]).map(([name,goals])=>({name,goals})).sort((a,b)=>b.goals-a.goals);
+    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — أهداف: <strong>${x.goals}</strong></span>${st.isAdmin?`<button class="btn" onclick='delGoal(${JSON.stringify(tm)},${JSON.stringify(x.name)})'>حذف</button>`:""}</div>`).join("")}</div>`;
   }).join("");
 
   const byTeamC={};
-  (st.cards||[]).forEach((x,idx)=>{
-    const tm=x.team||"غير محدد";
-    (byTeamC[tm]=byTeamC[tm]||[]).push({...x,idx});
+  (st.cards||[]).forEach(x=>{
+    const tm=x.team||"غير محدد",nm=(x.name||"").trim();
+    if(!nm)return;
+    byTeamC[tm]=byTeamC[tm]||{};
+    if(!byTeamC[tm][nm])byTeamC[tm][nm]={yellow:0,red:0};
+    byTeamC[tm][nm].yellow+=(+x.yellow||0);
+    byTeamC[tm][nm].red+=(+x.red||0);
   });
   const cTeams=Object.keys(byTeamC);
   cardsBox.innerHTML=!cTeams.length?`<div class="sub">لا توجد بطاقات مسجلة.</div>`:cTeams.map(tm=>{
-    const list=[...byTeamC[tm]];
-    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — صفراء: ${x.yellow||0} | حمراء: ${x.red||0}</span>${st.isAdmin?`<button class="btn" onclick="delCard(${x.idx})">حذف</button>`:""}</div>`).join("")}</div>`;
+    const list=Object.entries(byTeamC[tm]).map(([name,v])=>({name,yellow:v.yellow,red:v.red}));
+    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>{
+      const susp=x.red>=1||x.yellow>=4;
+      const warn=!susp&&x.yellow===3;
+      const badge=susp?`<span style="background:#dc2626;color:#fff;padding:1px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">موقوف</span>`:warn?`<span style="background:#f59e0b;color:#fff;padding:1px 6px;border-radius:6px;font-size:.75rem;margin-right:6px">مهدد</span>`:"";
+      return `<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — صفراء: ${x.yellow} | حمراء: ${x.red}${badge}</span>${st.isAdmin?`<button class="btn" onclick='delCard(${JSON.stringify(tm)},${JSON.stringify(x.name)})'>حذف</button>`:""}</div>`;
+    }).join("")}</div>`;
   }).join("");
+
  }
 
 
