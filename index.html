@@ -354,70 +354,74 @@ function addPlayerCard(tm,nm,type){if(!st.isAdmin||!nm)return;st.cards=Array.isA
   function addCardQuick(btn,type){if(!st.isAdmin||!btn)return;const row=btn.closest(".row-flex");if(!row)return;const name=(row.textContent||"").split("—")[0].trim();const found=(st.cards||[]).find(c=>(c.name||"").trim()===name);const team=found?found.team:"غير محدد";addPlayerCard(team,name,type);}
 
 
-function render(){
-  roleBtn.textContent=st.isAdmin?"مشرف (خروج)":"وضع المشاهد";
-  coachEditBtn.style.display=addGoalBtn.style.display=addCardBtn.style.display=st.isAdmin?"inline-block":"none";
-  const {arr,played}=calcTable();
-  playedBadge.textContent=`مباريات ملعوبة: ${played}`;
-  standingsRows.innerHTML=arr.map((r,i)=>`<tr><td>${i+1}</td><td class="t">${r.team}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gd}</td><td class="pts">${r.pts}</td><td>${r.y}</td><td>${r.r}</td></tr>`).join("");
-  roundPills.innerHTML=st.rounds.map(r=>`<button class="pill ${r.round===st.round?"active":""}" onclick="st.round=${r.round};render()">الجولة ${r.round}</button>`).join("");
-  const ri=Math.max(0,st.rounds.findIndex(r=>r.round===st.round));
-  const cur=st.rounds[ri];
-  const _rBtn=document.getElementById("roundEditBtn")||(()=>{const b=document.createElement("button");b.id="roundEditBtn";b.type="button";b.className="btn";b.textContent="ضبط الجولة";b.style.marginBottom="8px";b.onclick=openRoundModal;roundTitle.parentNode.insertBefore(b,roundTitle.nextSibling);return b;})();_rBtn.style.display=st.isAdmin?"inline-block":"none";
-
-  roundTitle.textContent=`الجولة ${cur.round}`;byeTxt.textContent=`راحة: ${cur.bye}`;
-    matchesBox.innerHTML=!cur.matches.length?`<div class="sub">لا توجد مواجهات مسجلة في هذه الجولة حالياً.</div>`:cur.matches.map((m,mi)=>{
-    const hs=m.hScore??m.homeScore??m.h??"";
-    const as=m.aScore??m.awayScore??m.a??"";
-    const done=hs!==""&&as!==""&&hs!==null&&as!==null&&hs!==undefined&&as!==undefined&&Number.isFinite(+hs)&&Number.isFinite(+as);
-    return `<div class="match"><div class="m-grid"><div>${m.home}</div><div class="score">${done?`${+hs} - ${+as}`:"لم تُلعب"}</div><div style="text-align:left">${m.away}</div></div><div class="row-flex" style="margin:6px 0 0"><span class="sub">صفراء: ${m.hY||0}-${m.aY||0} | حمراء: ${m.hR||0}-${m.aR||0}</span>${st.isAdmin?`<button class="btn" onclick="openMatch(${ri},${mi})">تعديل</button>`:""}</div></div>`;
-  }).join("");
-
-  const rankMap={};arr.forEach((r,i)=>rankMap[r.team]={...r,rk:i+1});
-  teamsGrid.innerHTML=TEAMS.map(t=>`<div class="t-box ${st.team===t?"sel":""}" onclick="st.team='${t}';render()"><strong>${t}</strong><div class="sub">المدرب: ${st.coaches[t]?.coach||"غير محدد"}</div><div class="sub">المركز: #${rankMap[t]?.rk||"-"} • ${rankMap[t]?.pts||0} نقطة</div></div>`).join("");
-  const ti=rankMap[st.team]||{rk:"-",pts:0,gd:0};
-  teamInfoBox.innerHTML=`<strong>${st.team}</strong> — المدرب: ${st.coaches[st.team]?.coach||"غير محدد"} — المركز: #${ti.rk} — النقاط: ${ti.pts} — الفارق: ${ti.gd}`;
-         const byTeamG={};
-  (st.scorers||[]).forEach(x=>{
-    const tm=x.team||"غير محدد",nm=(x.name||"").trim();
-    if(!nm)return;
-    byTeamG[tm]=byTeamG[tm]||{};
-    byTeamG[tm][nm]=(byTeamG[tm][nm]||0)+(+x.goals||0);
-  });
-  const gTeams=Object.keys(byTeamG);
-  scorersBox.innerHTML=!gTeams.length?`<div class="sub">لا توجد أهداف مسجلة.</div>`:gTeams.map(tm=>{
-    const list=Object.entries(byTeamG[tm]).map(([name,goals])=>({name,goals})).sort((a,b)=>b.goals-a.goals);
-    return `<div class="match" style="margin-bottom:10px"><strong style="display:block;margin-bottom:6px">${tm}</strong>${list.map(x=>`<div class="row-flex" style="padding:4px 0;border-top:1px solid #eef2f6"><span>${x.name} — أهداف: <strong>${x.goals}</strong></span>${st.isAdmin?`<button class="btn" onclick='delGoal(${JSON.stringify(tm)},${JSON.stringify(x.name)})'>حذف</button>`:""}</div>`).join("")}</div>`;
-  }).join("");
-
-          const byTeamC={};
-const _cardsList=Array.isArray(st.cards)?st.cards:Object.values(st.cards||{});
-_cardsList.forEach(x=>{
-  if(!x||typeof x!=="object")return;
-  const tm=x.team||"غير محدد",nm=(x.name||"").trim();
-  if(!nm)return;
-  byTeamC[tm]=byTeamC[tm]||{};
-  if(!byTeamC[tm][nm])byTeamC[tm][nm]={yellow:0,red:0};
-  byTeamC[tm][nm].yellow+=(+x.yellow||0);
-  byTeamC[tm][nm].red+=(+x.red||0);
-});
-
-                    const cTeams=Object.keys(byTeamC);
-cardsBox.innerHTML=!cTeams.length?`<div class="match"><div class="muted">لا توجد بطاقات صفراء أو حمراء مسجلة بعد.</div></div>`:cTeams.map(tm=>{
-  const list=Object.entries(byTeamC[tm]).map(([nm,v])=>{
-    const delBtn=st.isAdmin?`<button type="button" class="btn btn-danger btn-sm" onclick="delCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}')">حذف</button>`:"";
-    const _qB=st.isAdmin?`<div style="display:flex;gap:4px"><button type="button" class="btn btn-warn btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','yellow')">+ أصفر</button><button type="button" class="btn btn-danger btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','red')">+ أحمر</button></div>`:"";
-    return `<div class="row-flex" style="padding:6px 0;border-bottom:1px solid #eef2f7"><div><b>${nm}</b> <span class="badge y">صفراء: ${v.yellow}</span> <span class="badge r">حمراء: ${v.red}</span></div><div style="display:flex;gap:6px;align-items:center">${_qB}${delBtn}</div></div>`;
-  }).join("");
-  return `<div class="match" style="margin-bottom:10px"><div class="row-flex" style="margin-bottom:6px"><b>${tm}</b><span class="badge b">${Object.keys(byTeamC[tm]).length} لاعب</span></div>${list}</div>`;
-}).join("");
-
- }
-
-
-render();
-syncCloud(true);
-</script>
-</body>
-</html>
-    
+ function render(){
+  try{
+    if(typeof roleBtn!=="undefined"&&roleBtn)roleBtn.textContent=st.isAdmin?"وضع المشاهد":"دخول المشرف";
+    if(typeof coachEditBtn!=="undefined"&&coachEditBtn&&typeof addGoalBtn!=="undefined"&&addGoalBtn){
+      coachEditBtn.style.display=addGoalBtn.style.display=st.isAdmin?"inline-flex":"none";
+    }
+    const {arr,played}=calcTable();
+    if(typeof playedBadge!=="undefined"&&playedBadge)playedBadge.textContent=`مباريات ملعوبة: ${played}`;
+    if(typeof standingsRows!=="undefined"&&standingsRows){
+      standingsRows.innerHTML=arr.map((r,i)=>`<tr><td>${i+1}</td><td><b>${r.team}</b></td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gd}</td><td><b>${r.pts}</b></td><td>${r.y}</td><td>${r.r}</td></tr>`).join("");
+    }
+    if(typeof roundPills!=="undefined"&&roundPills&&Array.isArray(st.rounds)){
+      roundPills.innerHTML=st.rounds.map((r,i)=>`<button type="button" class="btn btn-sm ${i===curRound?"btn-primary":"btn-ghost"}" onclick="curRound=${i};render()">الجولة ${i+1}</button>`).join("");
+    }
+    const ri=Math.max(0,Math.min(12,curRound||0));
+    const rm=(st.rounds&&st.rounds[ri])||{matches:[]};
+    if(typeof roundTitle!=="undefined"&&roundTitle)roundTitle.textContent=`مباريات الجولة ${ri+1} (13 فريقاً)`;
+    if(typeof matchesBox!=="undefined"&&matchesBox){
+      matchesBox.innerHTML=(rm.matches||[]).map((m,mi)=>{
+        const done=m.hScore!==null&&m.hScore!==undefined&&m.aScore!==null&&m.aScore!==undefined;
+        const sc=done?`<b>${m.hScore} - ${m.aScore}</b>`:`<span class="muted">لم تُلعب</span>`;
+        const ed=st.isAdmin?`<button type="button" class="btn btn-sm btn-ghost" onclick="editMatch(${ri},${mi})">نتيجة</button>`:"";
+        return `<div class="match"><div class="row-flex"><div><b>${m.home}</b> ضد <b>${m.away}</b></div><div>${sc} ${ed}</div></div></div>`;
+      }).join("");
+    }
+    if(typeof teamsBox!=="undefined"&&teamsBox){
+      teamsBox.innerHTML=arr.map(r=>{
+        const ch=(st.coaches&&st.coaches[r.team])||"غير محدد";
+        return `<div class="match"><div class="row-flex"><div><b>${r.team}</b><div class="muted">المدرب: ${ch}</div></div><span class="badge b">${r.pts} نقطة</span></div></div>`;
+      }).join("");
+    }
+    const byTeamG={};
+    (Array.isArray(st.scorers)?st.scorers:Object.values(st.scorers||{})).forEach(x=>{
+      if(!x||typeof x!=="object")return;
+      const tm=x.team||"غير محدد",nm=(x.name||"").trim();
+      if(!nm)return;
+      byTeamG[tm]=byTeamG[tm]||{};
+      byTeamG[tm][nm]=(byTeamG[tm][nm]||0)+(+x.goals||1);
+    });
+    const gTeams=Object.keys(byTeamG);
+    if(typeof scorersBox!=="undefined"&&scorersBox){
+      scorersBox.innerHTML=!gTeams.length?`<div class="match"><div class="muted">لا يوجد هدافون مسجلون بعد.</div></div>`:gTeams.map(tm=>{
+        const list=Object.entries(byTeamG[tm]).sort((a,b)=>b[1]-a[1]).map(([nm,g])=>`<div class="row-flex" style="padding:6px 0;border-bottom:1px solid #eef2f7"><b>${nm}</b><span class="badge b">${g} هدف</span></div>`).join("");
+        return `<div class="match" style="margin-bottom:10px"><div class="row-flex" style="margin-bottom:6px"><b>${tm}</b></div>${list}</div>`;
+      }).join("");
+    }
+    const byTeamC={};
+    (Array.isArray(st.cards)?st.cards:Object.values(st.cards||{})).forEach(x=>{
+      if(!x||typeof x!=="object")return;
+      const tm=x.team||"غير محدد",nm=(x.name||"").trim();
+      if(!nm)return;
+      byTeamC[tm]=byTeamC[tm]||{};
+      if(!byTeamC[tm][nm])byTeamC[tm][nm]={yellow:0,red:0};
+      byTeamC[tm][nm].yellow+=(+x.yellow||0);
+      byTeamC[tm][nm].red+=(+x.red||0);
+    });
+    const cTeams=Object.keys(byTeamC);
+    if(typeof cardsBox!=="undefined"&&cardsBox){
+      cardsBox.innerHTML=!cTeams.length?`<div class="match"><div class="muted">لا توجد بطاقات صفراء أو حمراء مسجلة بعد.</div></div>`:cTeams.map(tm=>{
+        const list=Object.entries(byTeamC[tm]).map(([nm,v])=>{
+          const delBtn=st.isAdmin?`<button type="button" class="btn btn-danger btn-sm" onclick="delCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}')">حذف</button>`:"";
+          const _qB=st.isAdmin?`<div style="display:flex;gap:4px"><button type="button" class="btn btn-warn btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','yellow')">+ أصفر</button><button type="button" class="btn btn-danger btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','red')">+ أحمر</button></div>`:"";
+          return `<div class="row-flex" style="padding:6px 0;border-bottom:1px solid #eef2f7"><div><b>${nm}</b> <span class="badge y">صفراء: ${v.yellow}</span> <span class="badge r">حمراء: ${v.red}</span></div><div style="display:flex;gap:6px;align-items:center">${_qB}${delBtn}</div></div>`;
+        }).join("");
+        return `<div class="match" style="margin-bottom:10px"><div class="row-flex" style="margin-bottom:6px"><b>${tm}</b><span class="badge b">${Object.keys(byTeamC[tm]).length} لاعب</span></div>${list}</div>`;
+      }).join("");
+    }
+  }catch(err){
+    console.error("Render error:",err);
+  }
+}
