@@ -338,15 +338,19 @@ function saveGoal(){if(!st.isAdmin||!gPlayer.value.trim())return;const f=st.scor
  
 
 
-function delGoal(tm,nm){
-  if(!st.isAdmin||!Array.isArray(st.scorers))return;
-  st.scorers=st.scorers.filter(x=>!((x.team||"غير محدد")===tm&&(x.name||"").trim()===nm));
+ function delGoal(tm,nm){
+  if(!st.isAdmin)return;
+  const arr=Array.isArray(st.scorers)?st.scorers:Object.values(st.scorers||{});
+  st.scorers=arr.filter(x=>x&&typeof x==="object"&&!(((x.team||"غير محدد")===tm)&&((x.name||"").trim()===nm)));
   saveAll();render();
 }
 function delCard(tm,nm){
-  if(!st.isAdmin||!Array.isArray(st.cards))return;
-  st.cards=st.cards.filter(x=>!((x.team||"غير محدد")===tm&&(x.name||"").trim()===nm));
+  if(!st.isAdmin)return;
+  const arr=Array.isArray(st.cards)?st.cards:Object.values(st.cards||{});
+  st.cards=arr.filter(x=>x&&typeof x==="object"&&!(((x.team||"غير محدد")===tm)&&((x.name||"").trim()===nm)));
   saveAll();render();
+}
+
 }
  function openRoundModal(){if(!st.isAdmin)return;const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox"),mEl=document.getElementById("roundModal");if(!rEl||!bEl||!box||!mEl)return;rEl.innerHTML=(st.rounds||[]).map(x=>'<option value="'+x.round+'">الجولة '+x.round+'</option>').join("");const curR=Number(window._curRound)||5;rEl.value=st.rounds.some(x=>x.round===curR)?String(curR):"1";renderRoundFields();mEl.classList.add("open");}
 function renderRoundFields(){const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox");if(!rEl||!bEl||!box)return;const rnd=st.rounds.find(x=>x.round===Number(rEl.value))||st.rounds[0];if(!rnd)return;bEl.innerHTML='<option value="">بدون راحة</option>'+TEAMS.map(t=>'<option value="'+t+'">'+t+'</option>').join("");bEl.value=rnd.bye||"";const ms=Array.isArray(rnd.matches)?rnd.matches:[];box.innerHTML=Array.from({length:6},(_,i)=>{const m=ms[i]||{home:"",away:"",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0};const opts=(sel)=>'<option value="">— اختر فريق —</option>'+TEAMS.map(t=>'<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>').join("");return '<div style="display:flex;gap:6px;margin-bottom:6px"><select data-h="'+i+'" style="flex:1">'+opts(m.home||"")+'</select><select data-a="'+i+'" style="flex:1">'+opts(m.away||"")+'</select></div>';}).join("");}
