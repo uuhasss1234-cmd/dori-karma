@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -9,7 +9,13 @@
     header{background:#1d4ed8;color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
     h1{margin:0;font-size:1rem}
     .sub{font-size:.72rem;opacity:.9}
+    .muted{color:#64748b;font-size:.78rem}
     .btn{border:0;border-radius:8px;padding:6px 10px;background:#1d4ed8;color:#fff;font-weight:700;cursor:pointer;font-size:.78rem}
+    .btn-sm{padding:4px 8px;font-size:.72rem}
+    .btn-ghost{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+    .btn-primary{background:#1d4ed8;color:#fff}
+    .btn-warn{background:#f59e0b;color:#fff}
+    .btn-danger{background:#dc2626;color:#fff}
     .btn-light{border:1px solid #fff;border-radius:999px;padding:5px 10px;background:rgba(255,255,255,.15);color:#fff;font-weight:700;cursor:pointer;font-size:.75rem}
     .wrap{max-width:920px;margin:0 auto;padding:12px}
     .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:12px}
@@ -19,6 +25,10 @@
     th{background:#1e40af;color:#fff}
     th.t,td.t{text-align:right;padding-right:8px}
     .pts{color:#1d4ed8;font-weight:900}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:700}
+    .badge.b{background:#eff6ff;color:#1d4ed8}
+    .badge.y{background:#fef3c7;color:#92400e}
+    .badge.r{background:#fee2e2;color:#991b1b}
     .pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
     .pill{border:1px solid #bfdbfe;background:#eff6ff;color:#1e40af;border-radius:999px;padding:5px 11px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:.78rem}
     .pill.active{background:#1d4ed8;color:#fff}
@@ -27,9 +37,9 @@
     .score{background:#eff6ff;padding:4px 10px;border-radius:8px;min-width:66px;text-align:center;color:#1e3a8a}
     .teams{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
     @media(min-width:640px){.teams{grid-template-columns:repeat(3,1fr)}}
-    .t-box{border:1px solid #dbeafe;background:#eff6ff;border-radius:10px;padding:10px;cursor:pointer}
+    .t-box{border:1px solid #dbeafe;background:#eff6ff;border-radius:10px;padding:10px;cursor:pointer;font-weight:700}
     .t-box.sel{border:2px solid #1d4ed8;background:#fff}
-    nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:grid;grid-template-columns:repeat(4,1fr);z-index:20}
+    nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:grid;grid-template-columns:repeat(5,1fr);z-index:20}
     nav button{border:0;background:none;padding:10px 4px;font-weight:700;color:#475569;cursor:pointer;font-size:.75rem}
     nav button.active{color:#1d4ed8;background:#eff6ff}
     .modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:14px;z-index:40}
@@ -45,8 +55,8 @@
     <div class="sub">اللجنه المركزيه الرياضيه في قضاء كرمة بني سعيد</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center">
-    <span id="syncTxt" class="sub" onclick="syncCloud(true)">مزامنة</span>
-    <button id="roleBtn" class="btn-light" onclick="toggleRole()">وضع المشاهد</button>
+    <span id="syncTxt" class="sub" style="cursor:pointer" onclick="syncCloud(true)">مزامنة</span>
+    <button id="roleBtn" class="btn-light" onclick="toggleRole()">دخول المشرف</button>
   </div>
 </header>
 
@@ -82,7 +92,7 @@
     <button id="coachEditBtn" class="btn" style="display:none" onclick="openCoachModal()">تعديل المدرب</button>
   </section>
 
-<section id="sec-scorers" class="card" style="display:none">
+  <section id="sec-scorers" class="card" style="display:none">
     <div class="row-flex">
       <h2 style="margin:0;font-size:1rem">الهدافون حسب الفرق</h2>
       <button id="addGoalBtn" class="btn" style="display:none" onclick="openGoalModal()">+ هدف</button>
@@ -158,11 +168,10 @@
   </div>
 </div>
 
- <div id="cardModal" class="modal">
-  <div class="m-card"> 
+<div id="cardModal" class="modal">
+  <div class="m-card">
     <h3 style="margin:0 0 8px">تسجيل بطاقة</h3>
-     <input id="cPlayer" type="text" placeholder="اسم اللاعب" />
-
+    <input id="cPlayer" type="text" placeholder="اسم اللاعب" />
     <select id="cTeam"></select>
     <div style="display:flex;gap:6px;margin-top:6px">
       <input id="cYellow" type="number" min="0" value="0" placeholder="صفراء" />
@@ -174,7 +183,19 @@
     </div>
   </div>
 </div>
-<div id="roundModal" class="modal"><div class="m-card"><h3 style="margin:0 0 8px">ضبط الجولة</h3><select id="rRoundSel" onchange="renderRoundFields()" style="margin-bottom:8px"></select><div style="margin-bottom:8px"><label class="sub">فريق الراحة</label><select id="rByeSel"></select></div><div id="rMatchesBox" style="margin-bottom:8px"></div><div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="btn" onclick="saveRoundModal()">حفظ</button><button type="button" class="btn" onclick="closeM('roundModal')">إلغاء</button></div></div></div>
+
+<div id="roundModal" class="modal">
+  <div class="m-card">
+    <h3 style="margin:0 0 8px">ضبط الجولة</h3>
+    <select id="rRoundSel" onchange="renderRoundFields()" style="margin-bottom:8px"></select>
+    <div style="margin-bottom:8px"><label class="sub">فريق الراحة</label><select id="rByeSel"></select></div>
+    <div id="rMatchesBox" style="margin-bottom:8px"></div>
+    <div style="display:flex;gap:6px;justify-content:flex-end">
+      <button type="button" class="btn" onclick="saveRoundModal()">حفظ</button>
+      <button type="button" class="btn" onclick="closeM('roundModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const PIN = "HASSAN_\\HASSAN";
@@ -188,13 +209,12 @@ const BASE_ROUNDS = [
   {round:3,bye:"الأسود",matches:[{home:"الطلبة",away:"تشرين",hScore:3,aScore:0,hY:0,aY:0,hR:0,aR:0},{home:"القيثارة",away:"الأصدقاء",hScore:1,aScore:1,hY:0,aY:0,hR:0,aR:0},{home:"النجوم",away:"شباب الكرمة",hScore:2,aScore:1,hY:0,aY:0,hR:0,aR:0},{home:"شباب القبس",away:"الفرات",hScore:5,aScore:2,hY:0,aY:0,hR:0,aR:0},{home:"الأبطال",away:"الجنوب",hScore:2,aScore:1,hY:0,aY:0,hR:0,aR:0},{home:"الزوراء",away:"الهلال",hScore:1,aScore:0,hY:0,aY:0,hR:0,aR:0}]},
   {round:4,bye:"الأبطال",matches:[{home:"الأسود",away:"الهلال",hScore:2,aScore:1,hY:0,aY:0,hR:0,aR:0},{home:"النجوم",away:"الجنوب",hScore:2,aScore:1,hY:0,aY:0,hR:0,aR:0},{home:"الزوراء",away:"القيثارة",hScore:2,aScore:0,hY:0,aY:0,hR:0,aR:0},{home:"تشرين",away:"الفرات",hScore:1,aScore:2,hY:0,aY:0,hR:0,aR:0},{home:"الطلبة",away:"شباب الكرمة",hScore:1,aScore:1,hY:0,aY:0,hR:0,aR:0},{home:"شباب القبس",away:"الأصدقاء",hScore:1,aScore:0,hY:0,aY:0,hR:0,aR:0}]},
   {round:5,bye:"الهلال",matches:[{home:"تشرين",away:"الأصدقاء",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0},{home:"الأسود",away:"القيثارة",hScore:0,aScore:3,hY:0,aY:0,hR:0,aR:0},{home:"النجوم",away:"الأبطال",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0},{home:"شباب القبس",away:"الزوراء",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0},{home:"الجنوب",away:"الطلبة",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0},{home:"شباب الكرمة",away:"الفرات",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0}]}
-
 ];
 
 function make13Rounds(src){
   const out=[];
   for(let r=1;r<=13;r++){
-    const found=Array.isArray(src)?src.find(x=>Number(x.round)===r):null;
+    const found=Array.isArray(src)?src.find(x=>x&&Number(x.round)===r):null;
     const base=BASE_ROUNDS.find(x=>x.round===r);
     out.push({
       round:r,
@@ -212,7 +232,17 @@ function initState(){
     const raw=localStorage.getItem(SKEY);
     if(raw){
       const p=JSON.parse(raw);
-      return {isAdmin:false,sec:"standings",round:5,team:TEAMS[0],rounds:make13Rounds(p.rounds),scorers:p.scorers||[],coaches:{...defaultCoaches(),...(p.coaches||p.teamsInfo||{})},cards:p.cards||p.playerCards||[],updatedAt:p.updatedAt||0};
+      return {
+        isAdmin:false,
+        sec:"standings",
+        round:Number(p.round)||5,
+        team:TEAMS.includes(p.team)?p.team:TEAMS[0],
+        rounds:make13Rounds(p.rounds),
+        scorers:Array.isArray(p.scorers)?p.scorers:Object.values(p.scorers||{}),
+        coaches:{...defaultCoaches(),...(p.coaches||p.teamsInfo||{})},
+        cards:Array.isArray(p.cards||p.playerCards)?(p.cards||p.playerCards):Object.values(p.cards||p.playerCards||{}),
+        updatedAt:p.updatedAt||0
+      };
     }
   }catch(e){}
   return {isAdmin:false,sec:"standings",round:5,team:TEAMS[0],rounds:make13Rounds(),scorers:[],coaches:defaultCoaches(),cards:[],updatedAt:0};
@@ -224,8 +254,11 @@ let curMatch=null;
 function saveAll(){
   st.updatedAt=Date.now();
   const payload={rounds:st.rounds,scorers:st.scorers,coaches:st.coaches,cards:st.cards,updatedAt:st.updatedAt};
-  try{localStorage.setItem(SKEY,JSON.stringify(payload));}catch(e){}
-  fetch(DB_URL,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).then(()=>syncTxt.textContent="مباشر ✓").catch(()=>syncTxt.textContent="محلي");
+  try{localStorage.setItem(SKEY,JSON.stringify({...st,...payload}));}catch(e){}
+  const syncTxt=document.getElementById("syncTxt");
+  fetch(DB_URL,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
+    .then(()=>{if(syncTxt)syncTxt.textContent="مباشر ✓";})
+    .catch(()=>{if(syncTxt)syncTxt.textContent="محلي";});
 }
 
 function syncCloud(manual){
@@ -236,51 +269,49 @@ function syncCloud(manual){
     .then(d=>{
       if(d){
         if(d.rounds)st.rounds=make13Rounds(d.rounds);
-        if(d.scorers)st.scorers=d.scorers;
-        if(d.coaches)st.coaches={...(typeof defaultCoaches==="function"?defaultCoaches():{}),...d.coaches};
+        if(d.scorers)st.scorers=Array.isArray(d.scorers)?d.scorers:Object.values(d.scorers||{});
+        if(d.coaches)st.coaches={...defaultCoaches(),...d.coaches};
         const cloudCards=d.cards||d.playerCards;
-        if(Array.isArray(cloudCards)&&cloudCards.length){
-          st.cards=cloudCards;
+        if(cloudCards){
+          st.cards=Array.isArray(cloudCards)?cloudCards:Object.values(cloudCards||{});
         }
         st.updatedAt=d.updatedAt||Date.now();
         try{localStorage.setItem(SKEY,JSON.stringify(st));}catch(e){}
-        if(typeof render==="function")render();
+        render();
       }
       if(syncTxt)syncTxt.textContent="مباشر ✓";
     })
     .catch(()=>{if(syncTxt)syncTxt.textContent="محلي";});
 }
- 
-    })
-    .catch(()=>{if(syncTxt)syncTxt.textContent="محلي";});
-}
- 
 
- function calcTable(){
+function calcTable(){
   const m={};TEAMS.forEach(t=>m[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0,y:0,r:0});
   let played=0;
-  st.rounds.forEach(r=>r.matches.forEach(x=>{
-    const h=m[x.home],a=m[x.away];if(!h||!a)return;
-    h.y+=Number.isFinite(+x.hY)?+x.hY:0;
-    a.y+=Number.isFinite(+x.aY)?+x.aY:0;
-    h.r+=Number.isFinite(+x.hR)?+x.hR:0;
-    a.r+=Number.isFinite(+x.aR)?+x.aR:0;
-    const hsRaw=x.hScore,asRaw=x.aScore;
-    if(hsRaw!==null&&hsRaw!==undefined&&hsRaw!==""&&asRaw!==null&&asRaw!==undefined&&asRaw!==""){
-      const hs=+hsRaw,as=+asRaw;
-      if(Number.isFinite(hs)&&Number.isFinite(as)){
-        played++;
-        h.p++;a.p++;
-        h.gf+=hs;h.ga+=as;a.gf+=as;a.ga+=hs;
-        if(hs>as){h.w++;h.pts+=3;a.l++}
-        else if(as>hs){a.w++;a.pts+=3;h.l++}
-        else{h.d++;a.d++;h.pts++;a.pts++}
+  (Array.isArray(st.rounds)?st.rounds:Object.values(st.rounds||{})).forEach(r=>{
+    const matches=Array.isArray(r&&r.matches)?r.matches:Object.values((r&&r.matches)||{});
+    matches.forEach(x=>{
+      if(!x)return;
+      const h=m[x.home],a=m[x.away];if(!h||!a)return;
+      h.y+=Number.isFinite(+x.hY)?+x.hY:0;
+      a.y+=Number.isFinite(+x.aY)?+x.aY:0;
+      h.r+=Number.isFinite(+x.hR)?+x.hR:0;
+      a.r+=Number.isFinite(+x.aR)?+x.aR:0;
+      const hsRaw=x.hScore,asRaw=x.aScore;
+      if(hsRaw!==null&&hsRaw!==undefined&&hsRaw!==""&&asRaw!==null&&asRaw!==undefined&&asRaw!==""){
+        const hs=+hsRaw,as=+asRaw;
+        if(Number.isFinite(hs)&&Number.isFinite(as)){
+          played++;
+          h.p++;a.p++;
+          h.gf+=hs;h.ga+=as;a.gf+=as;a.ga+=hs;
+          if(hs>as){h.w++;h.pts+=3;a.l++}
+          else if(as>hs){a.w++;a.pts+=3;h.l++}
+          else{h.d++;a.d++;h.pts++;a.pts++}
+        }
       }
-    }
-  }));
-   (Array.isArray(st.cards)?st.cards:Object.values(st.cards||{})).forEach(c=>{
-
-    if(m[c.team]){
+    });
+  });
+  (Array.isArray(st.cards)?st.cards:Object.values(st.cards||{})).forEach(c=>{
+    if(c&&m[c.team]){
       m[c.team].y+=Number.isFinite(+c.yellow)?+c.yellow:0;
       m[c.team].r+=Number.isFinite(+c.red)?+c.red:0;
     }
@@ -295,7 +326,7 @@ function syncCloud(manual){
   return {arr,played};
 }
 
- function showSec(s){
+function showSec(s){
   st.sec=s;
   ["standings","rounds","teams","scorers","cards"].forEach(id=>{
     const el=document.getElementById("sec-"+id);
@@ -305,40 +336,79 @@ function syncCloud(manual){
   render();
 }
 
-
 function toggleRole(){
   if(st.isAdmin){st.isAdmin=false;render();}
-  else{pinInp.value="";document.getElementById("pinModal").classList.add("open");}
+  else{const p=document.getElementById("pinInp");if(p)p.value="";document.getElementById("pinModal").classList.add("open");}
 }
-function checkPin(){if(pinInp.value===PIN){st.isAdmin=true;closeM("pinModal");render();}}
-function closeM(id){document.getElementById(id).classList.remove("open");}
+function checkPin(){const p=document.getElementById("pinInp");if(p&&p.value===PIN){st.isAdmin=true;closeM("pinModal");render();}}
+function closeM(id){const el=document.getElementById(id);if(el)el.classList.remove("open");}
 
 function openMatch(ri,mi){
-  if(!st.isAdmin)return;curMatch={ri,mi};const x=st.rounds[ri].matches[mi];
-  mTitle.textContent=`${x.home} × ${x.away}`;hLbl.textContent=x.home;aLbl.textContent=x.away;
-  hSc.value=x.hScore??"";aSc.value=x.aScore??"";hY.value=x.hY||0;aY.value=x.aY||0;hR.value=x.hR||0;aR.value=x.aR||0;
+  if(!st.isAdmin)return;
+  curMatch={ri,mi};
+  const x=st.rounds[ri]&&st.rounds[ri].matches[mi];
+  if(!x)return;
+  mTitle.textContent=`${x.home} × ${x.away}`;
+  hLbl.textContent=x.home;aLbl.textContent=x.away;
+  hSc.value=x.hScore??"";aSc.value=x.aScore??"";
+  hY.value=x.hY||0;aY.value=x.aY||0;hR.value=x.hR||0;aR.value=x.aR||0;
   document.getElementById("matchModal").classList.add("open");
 }
 function saveMatch(){
-  if(!st.isAdmin||!curMatch)return;const x=st.rounds[curMatch.ri].matches[curMatch.mi];
+  if(!st.isAdmin||!curMatch)return;
+  const x=st.rounds[curMatch.ri]&&st.rounds[curMatch.ri].matches[curMatch.mi];
+  if(!x)return;
   x.hScore=hSc.value===""?null:+hSc.value;x.aScore=aSc.value===""?null:+aSc.value;
   x.hY=+hY.value||0;x.aY=+aY.value||0;x.hR=+hR.value||0;x.aR=+aR.value||0;
   saveAll();closeM("matchModal");render();
 }
 
-function openCoachModal(){if(!st.isAdmin)return;coachInp.value=(st.coaches[st.team]?.coach||"")==="غير محدد"?"":st.coaches[st.team].coach;document.getElementById("coachModal").classList.add("open");}
-function saveCoach(){if(!st.isAdmin)return;st.coaches[st.team]={coach:coachInp.value.trim()||"غير محدد"};saveAll();closeM("coachModal");render();}
+function openCoachModal(){
+  if(!st.isAdmin)return;
+  const cur=(st.coaches[st.team]&&st.coaches[st.team].coach)||"";
+  coachInp.value=cur==="غير محدد"?"":cur;
+  document.getElementById("coachModal").classList.add("open");
+}
+function saveCoach(){
+  if(!st.isAdmin)return;
+  st.coaches[st.team]={coach:coachInp.value.trim()||"غير محدد"};
+  saveAll();closeM("coachModal");render();
+}
 
-function openGoalModal(){if(!st.isAdmin)return;gTeam.innerHTML=TEAMS.map(t=>`<option>${t}</option>`).join("");gPlayer.value="";gCount.value=1;document.getElementById("goalModal").classList.add("open");}
-function saveGoal(){if(!st.isAdmin||!gPlayer.value.trim())return;const f=st.scorers.find(s=>s.name===gPlayer.value.trim()&&s.team===gTeam.value);if(f)f.goals+=+gCount.value||1;else st.scorers.push({name:gPlayer.value.trim(),team:gTeam.value,goals:+gCount.value||1});saveAll();closeM("goalModal");render();}
+function openGoalModal(){
+  if(!st.isAdmin)return;
+  gTeam.innerHTML=TEAMS.map(t=>`<option value="${t}">${t}</option>`).join("");
+  if(st.team&&TEAMS.includes(st.team))gTeam.value=st.team;
+  gPlayer.value="";gCount.value=1;
+  document.getElementById("goalModal").classList.add("open");
+}
+function saveGoal(){
+  if(!st.isAdmin||!gPlayer.value.trim())return;
+  st.scorers=Array.isArray(st.scorers)?st.scorers:Object.values(st.scorers||{});
+  const nm=gPlayer.value.trim(),tm=gTeam.value,gl=+gCount.value||1;
+  const f=st.scorers.find(s=>s&&s.name===nm&&s.team===tm);
+  if(f)f.goals=(+f.goals||0)+gl;
+  else st.scorers.push({name:nm,team:tm,goals:gl});
+  saveAll();closeM("goalModal");render();
+}
 
- function openCardModal(){if(!st.isAdmin)return;const tEl=document.getElementById("cTeam"),pEl=document.getElementById("cPlayer"),yEl=document.getElementById("cYellow"),rEl=document.getElementById("cRed"),mEl=document.getElementById("cardModal");if(tEl){tEl.innerHTML=TEAMS.map(t=>'<option value="'+t+'">'+t+'</option>').join("");if(st.team&&TEAMS.includes(st.team))tEl.value=st.team;}if(pEl)pEl.value="";if(yEl)yEl.value="0";if(rEl)rEl.value="0";if(mEl)mEl.classList.add("open");}
- function saveCard(){if(!st.isAdmin)return;const pEl=document.getElementById("cPlayer"),tEl=document.getElementById("cTeam"),yEl=document.getElementById("cYellow"),rEl=document.getElementById("cRed"),mEl=document.getElementById("cardModal");const nm=(pEl&&pEl.value||"").trim();if(!nm)return;const y=Number(yEl&&yEl.value)||0,r=Number(rEl&&rEl.value)||0;st.cards=st.cards||[];st.cards.push({name:nm,team:tEl?tEl.value:"",yellow:y,red:r});saveAll();if(mEl)mEl.classList.remove("open");render();}
+function openCardModal(){
+  if(!st.isAdmin)return;
+  const tEl=document.getElementById("cTeam"),pEl=document.getElementById("cPlayer"),yEl=document.getElementById("cYellow"),rEl=document.getElementById("cRed"),mEl=document.getElementById("cardModal");
+  if(tEl){tEl.innerHTML=TEAMS.map(t=>'<option value="'+t+'">'+t+'</option>').join("");if(st.team&&TEAMS.includes(st.team))tEl.value=st.team;}
+  if(pEl)pEl.value="";if(yEl)yEl.value="0";if(rEl)rEl.value="0";if(mEl)mEl.classList.add("open");
+}
+function saveCard(){
+  if(!st.isAdmin)return;
+  const pEl=document.getElementById("cPlayer"),tEl=document.getElementById("cTeam"),yEl=document.getElementById("cYellow"),rEl=document.getElementById("cRed"),mEl=document.getElementById("cardModal");
+  const nm=(pEl&&pEl.value||"").trim();if(!nm)return;
+  const y=Number(yEl&&yEl.value)||0,r=Number(rEl&&rEl.value)||0;
+  st.cards=Array.isArray(st.cards)?st.cards:Object.values(st.cards||{});
+  st.cards.push({name:nm,team:tEl?tEl.value:"",yellow:y,red:r});
+  saveAll();if(mEl)mEl.classList.remove("open");render();
+}
 
- 
-
-
- function delGoal(tm,nm){
+function delGoal(tm,nm){
   if(!st.isAdmin)return;
   const arr=Array.isArray(st.scorers)?st.scorers:Object.values(st.scorers||{});
   st.scorers=arr.filter(x=>x&&typeof x==="object"&&!(((x.team||"غير محدد")===tm)&&((x.name||"").trim()===nm)));
@@ -351,82 +421,10 @@ function delCard(tm,nm){
   saveAll();render();
 }
 
-}
- function openRoundModal(){if(!st.isAdmin)return;const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox"),mEl=document.getElementById("roundModal");if(!rEl||!bEl||!box||!mEl)return;rEl.innerHTML=(st.rounds||[]).map(x=>'<option value="'+x.round+'">الجولة '+x.round+'</option>').join("");const curR=Number(window._curRound)||5;rEl.value=st.rounds.some(x=>x.round===curR)?String(curR):"1";renderRoundFields();mEl.classList.add("open");}
-function renderRoundFields(){const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox");if(!rEl||!bEl||!box)return;const rnd=st.rounds.find(x=>x.round===Number(rEl.value))||st.rounds[0];if(!rnd)return;bEl.innerHTML='<option value="">بدون راحة</option>'+TEAMS.map(t=>'<option value="'+t+'">'+t+'</option>').join("");bEl.value=rnd.bye||"";const ms=Array.isArray(rnd.matches)?rnd.matches:[];box.innerHTML=Array.from({length:6},(_,i)=>{const m=ms[i]||{home:"",away:"",hScore:null,aScore:null,hY:0,aY:0,hR:0,aR:0};const opts=(sel)=>'<option value="">— اختر فريق —</option>'+TEAMS.map(t=>'<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>').join("");return '<div style="display:flex;gap:6px;margin-bottom:6px"><select data-h="'+i+'" style="flex:1">'+opts(m.home||"")+'</select><select data-a="'+i+'" style="flex:1">'+opts(m.away||"")+'</select></div>';}).join("");}
-function saveRoundModal(){if(!st.isAdmin)return;const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox"),mEl=document.getElementById("roundModal");if(!rEl||!bEl||!box)return;const rnd=st.rounds.find(x=>x.round===Number(rEl.value));if(!rnd)return;rnd.bye=bEl.value||"";const oldMs=Array.isArray(rnd.matches)?rnd.matches:[];const newMs=[];for(let i=0;i<6;i++){const hEl=box.querySelector('[data-h="'+i+'"]'),aEl=box.querySelector('[data-a="'+i+'"]');const h=hEl?hEl.value:"",a=aEl?aEl.value:"";if(h&&a){const prev=oldMs[i]||{};newMs.push({home:h,away:a,hScore:prev.hScore??null,aScore:prev.aScore??null,hY:prev.hY||0,aY:prev.aY||0,hR:prev.hR||0,aR:prev.aR||0});}}rnd.matches=newMs;saveAll();if(mEl)mEl.classList.remove("open");render();}
-function addPlayerCard(tm,nm,type){if(!st.isAdmin||!nm)return;st.cards=Array.isArray(st.cards)?st.cards:[];st.cards.push({team:tm||"غير محدد",name:nm,yellow:type==="y"?1:0,red:type==="r"?1:0});saveAll();render();}
-  function addCardQuick(btn,type){if(!st.isAdmin||!btn)return;const row=btn.closest(".row-flex");if(!row)return;const name=(row.textContent||"").split("—")[0].trim();const found=(st.cards||[]).find(c=>(c.name||"").trim()===name);const team=found?found.team:"غير محدد";addPlayerCard(team,name,type);}
-
-
- function render(){
-  try{
-    if(typeof roleBtn!=="undefined"&&roleBtn)roleBtn.textContent=st.isAdmin?"وضع المشاهد":"دخول المشرف";
-    if(typeof coachEditBtn!=="undefined"&&coachEditBtn&&typeof addGoalBtn!=="undefined"&&addGoalBtn){
-      coachEditBtn.style.display=addGoalBtn.style.display=st.isAdmin?"inline-flex":"none";
-    }
-    const {arr,played}=calcTable();
-    if(typeof playedBadge!=="undefined"&&playedBadge)playedBadge.textContent=`مباريات ملعوبة: ${played}`;
-    if(typeof standingsRows!=="undefined"&&standingsRows){
-      standingsRows.innerHTML=arr.map((r,i)=>`<tr><td>${i+1}</td><td><b>${r.team}</b></td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gd}</td><td><b>${r.pts}</b></td><td>${r.y}</td><td>${r.r}</td></tr>`).join("");
-    }
-    if(typeof roundPills!=="undefined"&&roundPills&&Array.isArray(st.rounds)){
-      roundPills.innerHTML=st.rounds.map((r,i)=>`<button type="button" class="btn btn-sm ${i===curRound?"btn-primary":"btn-ghost"}" onclick="curRound=${i};render()">الجولة ${i+1}</button>`).join("");
-    }
-    const ri=Math.max(0,Math.min(12,curRound||0));
-    const rm=(st.rounds&&st.rounds[ri])||{matches:[]};
-    if(typeof roundTitle!=="undefined"&&roundTitle)roundTitle.textContent=`مباريات الجولة ${ri+1} (13 فريقاً)`;
-    if(typeof matchesBox!=="undefined"&&matchesBox){
-      matchesBox.innerHTML=(rm.matches||[]).map((m,mi)=>{
-        const done=m.hScore!==null&&m.hScore!==undefined&&m.aScore!==null&&m.aScore!==undefined;
-        const sc=done?`<b>${m.hScore} - ${m.aScore}</b>`:`<span class="muted">لم تُلعب</span>`;
-        const ed=st.isAdmin?`<button type="button" class="btn btn-sm btn-ghost" onclick="editMatch(${ri},${mi})">نتيجة</button>`:"";
-        return `<div class="match"><div class="row-flex"><div><b>${m.home}</b> ضد <b>${m.away}</b></div><div>${sc} ${ed}</div></div></div>`;
-      }).join("");
-    }
-    if(typeof teamsBox!=="undefined"&&teamsBox){
-      teamsBox.innerHTML=arr.map(r=>{
-        const ch=(st.coaches&&st.coaches[r.team])||"غير محدد";
-        return `<div class="match"><div class="row-flex"><div><b>${r.team}</b><div class="muted">المدرب: ${ch}</div></div><span class="badge b">${r.pts} نقطة</span></div></div>`;
-      }).join("");
-    }
-    const byTeamG={};
-    (Array.isArray(st.scorers)?st.scorers:Object.values(st.scorers||{})).forEach(x=>{
-      if(!x||typeof x!=="object")return;
-      const tm=x.team||"غير محدد",nm=(x.name||"").trim();
-      if(!nm)return;
-      byTeamG[tm]=byTeamG[tm]||{};
-      byTeamG[tm][nm]=(byTeamG[tm][nm]||0)+(+x.goals||1);
-    });
-    const gTeams=Object.keys(byTeamG);
-    if(typeof scorersBox!=="undefined"&&scorersBox){
-      scorersBox.innerHTML=!gTeams.length?`<div class="match"><div class="muted">لا يوجد هدافون مسجلون بعد.</div></div>`:gTeams.map(tm=>{
-        const list=Object.entries(byTeamG[tm]).sort((a,b)=>b[1]-a[1]).map(([nm,g])=>`<div class="row-flex" style="padding:6px 0;border-bottom:1px solid #eef2f7"><b>${nm}</b><span class="badge b">${g} هدف</span></div>`).join("");
-        return `<div class="match" style="margin-bottom:10px"><div class="row-flex" style="margin-bottom:6px"><b>${tm}</b></div>${list}</div>`;
-      }).join("");
-    }
-    const byTeamC={};
-    (Array.isArray(st.cards)?st.cards:Object.values(st.cards||{})).forEach(x=>{
-      if(!x||typeof x!=="object")return;
-      const tm=x.team||"غير محدد",nm=(x.name||"").trim();
-      if(!nm)return;
-      byTeamC[tm]=byTeamC[tm]||{};
-      if(!byTeamC[tm][nm])byTeamC[tm][nm]={yellow:0,red:0};
-      byTeamC[tm][nm].yellow+=(+x.yellow||0);
-      byTeamC[tm][nm].red+=(+x.red||0);
-    });
-    const cTeams=Object.keys(byTeamC);
-    if(typeof cardsBox!=="undefined"&&cardsBox){
-      cardsBox.innerHTML=!cTeams.length?`<div class="match"><div class="muted">لا توجد بطاقات صفراء أو حمراء مسجلة بعد.</div></div>`:cTeams.map(tm=>{
-        const list=Object.entries(byTeamC[tm]).map(([nm,v])=>{
-          const delBtn=st.isAdmin?`<button type="button" class="btn btn-danger btn-sm" onclick="delCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}')">حذف</button>`:"";
-          const _qB=st.isAdmin?`<div style="display:flex;gap:4px"><button type="button" class="btn btn-warn btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','yellow')">+ أصفر</button><button type="button" class="btn btn-danger btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','red')">+ أحمر</button></div>`:"";
-          return `<div class="row-flex" style="padding:6px 0;border-bottom:1px solid #eef2f7"><div><b>${nm}</b> <span class="badge y">صفراء: ${v.yellow}</span> <span class="badge r">حمراء: ${v.red}</span></div><div style="display:flex;gap:6px;align-items:center">${_qB}${delBtn}</div></div>`;
-        }).join("");
-        return `<div class="match" style="margin-bottom:10px"><div class="row-flex" style="margin-bottom:6px"><b>${tm}</b><span class="badge b">${Object.keys(byTeamC[tm]).length} لاعب</span></div>${list}</div>`;
-      }).join("");
-    }
-  }catch(err){
-    console.error("Render error:",err);
-  }
-}
+function openRoundModal(){
+  if(!st.isAdmin)return;
+  const rEl=document.getElementById("rRoundSel"),bEl=document.getElementById("rByeSel"),box=document.getElementById("rMatchesBox"),mEl=document.getElementById("roundModal");
+  if(!rEl||!bEl||!box||!mEl)return;
+  rEl.innerHTML=(st.rounds||[]).map(x=>'<option value="'+x.round+'">الجولة '+x.round+'</option>').join("");
+  const curR=
+ 
