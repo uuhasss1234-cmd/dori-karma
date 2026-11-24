@@ -278,7 +278,8 @@ function syncCloud(manual){
       }
     }
   }));
-  st.cards.forEach(c=>{
+   (Array.isArray(st.cards)?st.cards:Object.values(st.cards||{})).forEach(c=>{
+
     if(m[c.team]){
       m[c.team].y+=Number.isFinite(+c.yellow)?+c.yellow:0;
       m[c.team].r+=Number.isFinite(+c.red)?+c.red:0;
