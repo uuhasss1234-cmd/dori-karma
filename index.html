@@ -403,22 +403,14 @@ _cardsList.forEach(x=>{
 });
 
                     const cTeams=Object.keys(byTeamC);
-      cardsBox.innerHTML=!cTeams.length?`<div class="sub">لا توجد بطاقات مسجلة</div>`:cTeams.map(tm=>{
-        const list=Object.entries(byTeamC[tm]).map(([nm,v])=>{
-          const delBtn=st.isAdmin?`<button type="button" class="btn" onclick="delCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}')">حذف</button>`:"";
-            const _qB=st.isAdmin?`<div style="display:flex;gap:4px"><button type="button" class="btn" onclick="addCardQuick(this,'y')">+ صفراء</button><button type="button" class="btn" onclick="addCardQuick(this,'r')">+ حمراء</button>${delBtn}</div>`:delBtn;
-
-
-
- 
-          return `<div class="row-flex" style="padding:4px 0"><div>${nm} — صفراء: ${v.yellow} | حمراء: ${v.red}</div>${extraBtns}</div>`;
-        }).join("");
-        return `<div class="match" style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:6px">${tm}</div>${list}</div>`;
-      }).join("");
-
-
-
- 
+cardsBox.innerHTML=!cTeams.length?`<div class="match"><div class="muted">لا توجد بطاقات صفراء أو حمراء مسجلة بعد.</div></div>`:cTeams.map(tm=>{
+  const list=Object.entries(byTeamC[tm]).map(([nm,v])=>{
+    const delBtn=st.isAdmin?`<button type="button" class="btn btn-danger btn-sm" onclick="delCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}')">حذف</button>`:"";
+    const _qB=st.isAdmin?`<div style="display:flex;gap:4px"><button type="button" class="btn btn-warn btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','yellow')">+ أصفر</button><button type="button" class="btn btn-danger btn-sm" onclick="addPlayerCard('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}','red')">+ أحمر</button></div>`:"";
+    return `<div class="row-flex" style="padding:6px 0;border-bottom:1px solid #eef2f7"><div><b>${nm}</b> <span class="badge y">صفراء: ${v.yellow}</span> <span class="badge r">حمراء: ${v.red}</span></div><div style="display:flex;gap:6px;align-items:center">${_qB}${delBtn}</div></div>`;
+  }).join("");
+  return `<div class="match" style="margin-bottom:10px"><div class="row-flex" style="margin-bottom:6px"><b>${tm}</b><span class="badge b">${Object.keys(byTeamC[tm]).length} لاعب</span></div>${list}</div>`;
+}).join("");
 
  }
 
