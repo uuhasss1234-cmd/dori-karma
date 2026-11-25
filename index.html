@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -420,6 +420,16 @@ function delCard(tm,nm){
   st.cards=arr.filter(x=>x&&typeof x==="object"&&!(((x.team||"غير محدد")===tm)&&((x.name||"").trim()===nm)));
   saveAll();render();
 }
+function addPlayerGoal(tm,nm){
+  if(!st.isAdmin||!nm)return;
+  st.scorers=Array.isArray(st.scorers)?st.scorers:Object.values(st.scorers||{});
+  const cleanTm=(tm||"غير محدد").trim();
+  const cleanNm=nm.trim();
+  const f=st.scorers.find(s=>s&&typeof s==="object"&&(s.team||"غير محدد").trim()===cleanTm&&(s.name||"").trim()===cleanNm);
+  if(f)f.goals=(+f.goals||0)+1;
+  else st.scorers.push({name:cleanNm,team:cleanTm,goals:1});
+  saveAll();render();
+}
 
 function openRoundModal(){
   if(!st.isAdmin)return;
@@ -522,24 +532,28 @@ function render(){
       teamInfoBox.innerHTML=`<div class="row-flex" style="margin:0"><div><b>${selT}</b><div class="muted">المدرب: ${ch}</div></div></div>`;
     }
 
-    const byTeamG={};
+        const totalsG={};
     (Array.isArray(st.scorers)?st.scorers:Object.values(st.scorers||{})).forEach(x=>{
       if(!x||typeof x!=="object")return;
-      const tm=x.team||"غير محدد",nm=(x.name||"").trim();
+      const tm=(x.team||"غير محدد").trim(),nm=(x.name||"").trim();
       if(!nm)return;
-      byTeamG[tm]=byTeamG[tm]||{};
-      byTeamG[tm][nm]=(byTeamG[tm][nm]||0)+(+x.goals||1);
+      const key=`${tm}|||${nm}`;
+      if(!totalsG[key])totalsG[key]={team:tm,name:nm,goals:0};
+      totalsG[key].goals+=(+x.goals||1);
     });
-    const gTeams=Object.keys(byTeamG);
+    const sortedScorers=Object.values(totalsG).sort((a,b)=>(b.goals-a.goals)||a.name.localeCompare(b.name,"ar"));
     if(scorersBox){
-      scorersBox.innerHTML=!gTeams.length?`<div class="match"><div class="muted">لا يوجد هدافون مسجلون بعد.</div></div>`:gTeams.map(tm=>{
-        const list=Object.entries(byTeamG[tm]).sort((a,b)=>b[1]-a[1]).map(([nm,g])=>{
-          const delBtn=st.isAdmin?`<button type="button" class="btn btn-danger btn-sm" onclick="delGoal('${tm.replace(/'/g,"\\'")}','${nm.replace(/'/g,"\\'")}')">حذف</button>`:"";
-          return `<div class="row-flex" style="padding:6px 0;border-bottom:1px solid #eef2f7"><b>${nm}</b><div style="display:flex;gap:6px;align-items:center"><span class="badge b">${g} هدف</span>${delBtn}</div></div>`;
+      scorersBox.innerHTML=!sortedScorers.length
+        ?`<div class="match"><div class="muted">لا يوجد هدافون مسجلون بعد.</div></div>`
+        :sortedScorers.map((p,idx)=>{
+          const safeTm=p.team.replace(/'/g,"\\'");
+          const safeNm=p.name.replace(/'/g,"\\'");
+          const addBtn=st.isAdmin?`<button type="button" class="btn btn-primary btn-sm" onclick="addPlayerGoal('${safeTm}','${safeNm}')">+ هدف</button>`:"";
+          const delBtn=st.isAdmin?`<button type="button" class="btn btn-danger btn-sm" onclick="delGoal('${safeTm}','${safeNm}')">حذف</button>`:"";
+          return `<div class="match" style="margin-bottom:8px"><div class="row-flex" style="margin:0"><div><b>${idx+1}. ${p.name}</b> <span class="muted">— ${p.team}</span></div><div style="display:flex;gap:6px;align-items:center"><span class="badge b">${p.goals} هدف</span>${addBtn}${delBtn}</div></div></div>`;
         }).join("");
-        return `<div class="match" style="margin-bottom:10px"><div class="row-flex" style="margin-bottom:6px"><b>${tm}</b></div>${list}</div>`;
-      }).join("");
     }
+ 
 
     const byTeamC={};
     (Array.isArray(st.cards)?st.cards:Object.values(st.cards||{})).forEach(x=>{
